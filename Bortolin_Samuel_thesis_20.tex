@@ -22,6 +22,7 @@
 \usepackage{afterpage}
 \usepackage[paperheight=29.7cm, paperwidth=21cm, outer=1.5cm, inner=2.5cm, top=2cm, bottom=2cm]{geometry} % per definizione layout
 \usepackage{titlesec} % per formato custom dei titoli dei capitoli
+\usepackage{hyperref} % per i collegamenti ipertestuali
 
 %%%%%%%%%%%%%%
 % supporto lettere accentate
@@ -35,6 +36,10 @@
 \usepackage[english]{babel}
 \usepackage{chngcntr}
 \counterwithout{footnote}{chapter}
+
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[backend=bibtex, maxbibnames=10, style=numeric]{biblatex}
+\addbibresource{bibliography.bib}
 
 \begin{document}
 
@@ -51,8 +56,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \input{acknowledgments}
-  \afterpage{\null\thispagestyle{empty}\clearpage}
+  \clearpage
   \pagestyle{plain} % nessuna intestazione e pie pagina con numero al centro
+  \afterpage{\null\thispagestyle{empty}\clearpage}
 
   
   % inizio numerazione pagine in numeri arabi
@@ -82,8 +88,8 @@
     \begingroup
       % nessuna interruzione di pagina tra capitoli
       % ridefinizione dei comandi di clear page
-      %\renewcommand{\cleardoublepage}{} 
-      %\renewcommand{\clearpage}{} 
+      % \renewcommand{\cleardoublepage}{} 
+      % \renewcommand{\clearpage}{} 
       % redefinizione del formato del titolo del capitolo
       % da formato
       %   Capitolo X
@@ -138,14 +144,15 @@
       
     \endgroup
 
-
     % bibliografia in formato bibtex
     %
     % aggiunta del capitolo nell'indice
-    \addcontentsline{toc}{chapter}{Bibliography}
+    % \addcontentsline{toc}{chapter}{Bibliography}
     % stile con ordinamento alfabetico in funzione degli autori
-    \bibliographystyle{plain}
-    \bibliography{bibliography}
+    % \bibliographystyle{plain}
+    % \bibliography{bibliography}
+    \printbibliography[heading=bibintoc, title={Bibliography}]
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Nota

@@ -2,33 +2,93 @@
 \label{cha:soa}
 \vspace{0.5 cm} 
 
-Literature review \dots
+In this section, the current state of the art has been analyzed in the context of counting people in a certain place of interest. Various technologies used for this purpose in the literature are presented. Furthermore, the reasons why sniffing the Wi-Fi probe request frames is the solution with the best trade-offs have been explained. At the end of this chapter, it will be clear the choice to develop this type of system with the U-Hopper team to find a solution to estimate the number of people with high accuracy and low costs, providing real-time integration and ensuring user privacy.
 
 
-\vspace{0.5 cm} 
 \section{People counting methods}
 \label{sec:count}
-\vspace{0.5 cm} 
+\vspace{0.2 cm} 
 
-What are the methods for count the people \dots
+Let us start by thinking about before the popularity of mobile devices and the development of all these new communication technologies that are making this world increasingly interconnected and therefore before the opportunity to exploit the signals of these devices to identify the presence of people.
+
+In 2010, Pinna et al. compared some of the technologies of the time  (e.g. infrared sensors, treadle switch-based systems, weigh in motion systems using load cells) to avoid the manual collection of the occupation information and promote automatic counting \cite{pinna2010automatic}. All of these methods presented have good accuracy  (95\% in optimal conditions of use for treadle mats and approximately 90\% for the infrared sensors, 97\% for load cells) but have high costs and need the installation and the maintenance of the sensors.
+
+Other studies have been done to improve the performance of infrared sensor systems, Jia and Zhang described a system with subordinate nodes for collecting information from pyroelectric infrared sensors and a master node that when it receives information from a sensor has to determine whether a person is entering or leaving \cite{jia2015application}. 
+Systems like this require sensors for each entry point, in the case of overcrowding or continuous flows of people, some sensors may not work properly and can lead to a wrong estimation and these errors accumulate over time.
+
+Many methods are proposed in the literature for processing images and videos captured by a camera device. Recognition and tracking of people by a stereo vision system to increase or decrease a people counter \cite{bernini2014embedded}, a separated-aggregated framework based on deep learning to estimate the number of people from still images \cite{zhang2018auxiliary}, a deep learning-based method for estimating crowd density and the total number of people in high-density crowd images \cite{zhang2019deep}, estimation of the people flows and then summing them to obtain people densities \cite{liu2019estimating}, a locate size and count CNN (Convolutional Neural Network) model is proposed to to resolve people in dense crowds  \cite{sam2019locate}.
+However, taking photos or videos of unknown people is always a privacy issue as decreed by the GDPR (General Data Protection Regulation) in the rights of the data subject. These methods rely on the use of cameras to get the data to analyze and therefore have the problems related to these devices. Images can be noisy in dim light conditions and due to the presence of obstruction or overlaps people may not be detectable. Moreover, the implementation of these methods entails high costs due to video camera devices.
+
+A not very popular but interesting method of counting the number of people is to analyze the audio of a place with a microphone and count the different audio tones \cite{kannan2012low}. Afterward, Valle proposed a more sophisticated prediction model to estimate the occupancy of a room which borrows speech recognition tradition and is based on Gaussian mixtures and hidden Markov models \cite{valle2016abroa}.
+However, analyzing the voice of unknown people is always a privacy issue as decreed by the GDPR. These methods can be inaccurate due to high ambient noise and the limitations on the quality of the microphones must be considered during the analysis. In addition, other sounds from smartphones or radios must be filtered to avoid being counted as people.
+
+In this new era dominated by smartphones, radio-frequency solutions are growing: in recent years Wi-Fi, Bluetooth, Bluetooth Low Energy, LTE (Long Term Evolution) approaches have been developed.
+
+Many researchers have investigated the possibility of estimating the number of people using the two most popular standards for wireless communication, i.e. Wi-Fi and Bluetooth. In 2014 Schauer et al. performed this type of comparison with the aim of creating a pedestrian flow estimation system. They stated that only a fraction of surrounding devices could have been tracked by periodical Bluetooth scans and therefore Bluetooth-based estimations were less accurate, showing an average correlation to the ground truth of only 0.53 in the best case. In contrast to Bluetooth, Wi-Fi tracking provided a good approximation of crowd densities and pedestrian flows with an average correlation of 0.75 \cite{schauer2014estimating}. 
+
+Bai et al. tried to detect device with different approaches: the number of the sensed Bluetooth Low Energy devices was about $\frac{1}{3}$ of the sensed Wi-Fi devices, these data were sparse, and most of the sensed devices only appeared for a few seconds. The number of unique Bluetooth MAC (Media Access Control) addresses was less than $\frac{1}{10}$ of the unique Wi-Fi MAC addresses, so they gave up the possibility of using Bluetooth Low Energy and Bluetooth data. They concentrated on filtering the Wi-Fi data and obtained a correlation with the ground truth of 0.839 \cite{bai2017lessons}.
+
+Di Domenico et al. were the first to propose to use LTE signals of opportunity for applications different from location/tracking, i.e. to estimate crowd density within an environment relying on the analysis of variations of the LTE reference signal received power \cite{di2017lte}. This approach is affected by the changing of positions that lead to a different superimposition of multipath components and, hence, to a different received power. The same number of people at different times can generate totally different values, thus leading to significant errors during the estimation process. They achieved an average accuracy ranging of 82\%, but they tested this system only with a maximum of 5 people. As the number of people increases, the accuracy of the classification decreases, therefore it cannot be used in overcrowded areas.
+
+Shibata and Yamamoto used a sensor node to obtain time-series data of signal strength on a frequency band used for cellular communications. Then they analyzed them using several machine learning techniques to estimate the crowd density around the sensor node installation site \cite{shibata2019people}. This method did not provide the number of people but only the stages of occupancy, with three stages (Low, Normal, and Crowd) the precision is 78\% but with five (Low, Little\_Normal, Normal, Little\_Crowd and Crowd) is only 53\%. 
+
+Another set of solutions developed exploits the attenuation of signals, which could be made by an IR-UWB (Impulse Radio Ultra Wideband) radar, Bluetooth Low Energy devices or RFID (Radio Frequency Identification) readers with antennas.
+
+Choi et al. presented an approach with an IR-UWB radar that needs a preliminary detection of clusters in each environment it will be used to set the parameter values for the algorithm. Then they collected data and thought the use of statistical models they found the number of people that have the maximum likelihood from the minimum of 0 people to the maximum of Np people \cite{choi2017people}. 
+This type of approach needs to know the maximum number of people and works only in a restricted area depending on the antenna. In this case with an angle of \ang{80} and a maximum distance of 5 meters, therefore it cannot be used for many applications.
+
+Brockmann et al. presented a method to count people in a queue using the attenuation of Bluetooth Low Energy signals. Almost 98\% accuracy, but a lot of devices are needed and it's possible to use only in situations where the queue has a predefined path where the sensors are located \cite{brockmann2018cutiqueue}.
+
+Gupta et al. proposed an algorithm to estimate the number of people that are crossing the RFID installation in both the directions, achieving 90\% accuracy by real-time experiments for continuous movement up to 75 persons \cite{gupta2018device}. For realize a system like this a lot of RFID readers, antennas and tags are needed. An optimum distance is required between the readers, and with the tags. It works only assuming that people do not reverse directions while walking in the passage. However, as the density of the crowd increases beyond an extent, it tends to completely block the reading of the tag.
 
 
-\vspace{0.5 cm} 
 \section{Wi-Fi probe request frames methods}
 \label{sec:probe}
-\vspace{0.5 cm}
+\vspace{0.2 cm}
 
-Wi-Fi spproach \dots
+From the previous section, it is clear that the Wi-Fi solution is a step further compared to other solutions in the literature. By analyzing the Wi-Fi probe request frames, it is possible to better estimate the number of people in a certain place with lower costs.
+
+Handte et al. presented one of the first approaches to estimate crowd density by monitoring Wi-Fi probe request frames. They modified the firmware of some existing access points and created a Web service that allows the upload of the latest crowd density measurements \cite{handte2014crowd}. The system was able to continuously detect around 20\% of the people on average because in 2014 there were far fewer mobile devices than nowadays (only 49\% of the population had a smartphone in Span in 2014) and they did not use advanced techniques to solve the occupancy problem.
+
+Kalikova and Krcal tested the feasibility of Wi-Fi detection of mobile devices extracting information from the probe request frames. The paper presents the results of tests of detection of mobile devices with their Wi-Fi on and connected to a particular access point  \cite{kalikova2017people}.
+
+Mikkelsen and Madsen presented a system to anonymize the MAC address of the sniffed probe request frames, to sent them to a server and to analyze them putting two thresholds: minimum value of the RSSI (Received Signal Strength Indicator) and minimum detection time \cite{mikkelsen2016public}. They said that the use of machine learning techniques could have ensured greater accuracy of estimates.
+
+In another experiment, Mikkelsen et al. extrapolated from the number of devices the number of people present based on a probability distribution of the number of WLAN (Wireless Local Area Network) enabled devices that a person is carrying and compared this method with a light sensor estimator concluding that the WLAN estimator is better at recovering after errors, while errors in light sensor estimator accumulate over time \cite{mikkelsen2018sensing}.
+
+With a novel occupation estimation algorithm to reduce the overestimation problem, Mehmood et al. found that using four sniffing devices together resulted in a maximum overestimation of 15\% \cite{mehmood2019occupancy}.
+
+Oliveira et al. designed a specific device to monitor the presence of people by analyzing the Wi-Fi probe request frames \cite{oliveira2018sherlock}. Subsequently, they proposed a method for estimating the number of devices with a very strong correlation with the ground truth of the number of people in the environment, with a Pearson's correlation coefficient of 0.896 \cite{oliveira2019mobile}.
+
+Nishide filtered the collected data using a combination of RSSI, packet frequency, and the total time duration which the nearby device is detected. Filtering is performed individually for each parameter, and then the linear regression and correlation coefficients are calculated  \cite{nishide2019filter}. He said that there may be other ways to accurately estimate the number of people using machine learning.
+
+Wang et al. employed the Random Forest method to infer occupant counts using the Wi-Fi connection counts data \cite{wang2019inferring}. The method was tested in a real office building with an average occupancy of 22-27 people and a peak occupancy of 48-74 people, the RMSE (Root Mean Square Error) is four people on the test set. For more than 70\% of estimations, the errors are within two people counts, and for more than 90\% of estimations, the errors are within six people counts. 
 
 
-\vspace{0.5 cm} 
+\vspace{0.1 cm}
+\subsection{Use cases}
+\label{sec:cases}
+\vspace{0.1 cm}
+
+The Wi-Fi method has several use cases, a strength of this method is in fact the versatility of use for many application contexts.
+
+Prasertsung and Horanont used the Wi-Fi probe request frames monitoring technique to identify the number of the customers visiting a coffee shop. They showed that the number of customers tends to increase on the average of 30.43\% on a promotion day \cite{prasertsung2017does}. This can be used to explore how a promotion can drive customers into stores.
+
+Shen et al. proposed a shopping group detection system using Wi-Fi. Experimental results indicated that this method could is capable of detecting over 90\% of the groups with an accuracy of 91.2\% \cite{shen2018snow}.
+
+Singh et al. proposed a first-hand application of Wi-Fi sensors and LSTM (Long Short Term Memory) neural network for crowd forecasting and large-scale public event monitoring \cite{singh2020crowd}.
+
+
+\vspace{0.1 cm}
 \subsection{People estimation on public transports}
-\label{sec:bus}
-\vspace{0.5 cm}
+\label{sec:transports}
+\vspace{0.1 cm}
 
-Here there are two interesting articles
-\cite{nishide2019filter} \cite{mikkelsen2016public}.
+The particular case of people estimation on public transport such as busses is a complex application because unlike the estimation in a static place like a shop, there is the movement to consider and the presence of people waiting at the stops, people in the traffic, pedestrians and more. The esteem of people in public transport is a really interesting challenge that is dealt with in literature and that can provide some useful information to public transport managers.
 
-% viene tenuto l'ordine per cognome nelle citazioni in automatico
+Handte et al.  presented a navigation system for bus passengers that has the ability to seamlessly interconnect bus passengers with the real-world public bus infrastructure. Using the occupancy classes to classify the prediction (low, medium, and high occupancy), they got an exact match accuracy of 61.9\% \cite{handte2016internet}. This work provides an indication of the feasibility of real-time information but accuracy can certainly be improved with the use of machine learning techniques.
 
-Something else \cite{mehmood2019occupancy} \dots
+The study of Reichl et al. examined the use of Wi-Fi-based technologies to count the number and compute the flow of Wi-Fi-enabled devices and hence infer people through the railway infrastructure system in real-time \cite{reichl2018using}. The graph of unique visitors revealed is similar when compared with ticketing data, converting Wi-Fi counts into an estimated number of people assuming that 70\% of people were detectable, without using advanced techniques to do this.
+
+Oransirikul and Takada presented a method to predict the number of passengers at the bus stop by capturing Wi-Fi activity and using the polynomial regression method with six independent variables with a degree of 2. It works well with an average MAE (Mean Absolute Error) of the prediction average of 6, but they did not deal with real-time transmission and analysis of the data \cite{oransirikul2019practicability}.
+Our approach is similar but used machine learning to determine the best polynomial approximation, i.e. the degree and the coefficients, for two variables: trend and seasonality.

@@ -23,6 +23,7 @@
 \usepackage[paperheight=29.7cm, paperwidth=21cm, outer=1.5cm, inner=2.5cm, top=2cm, bottom=2cm]{geometry} % per definizione layout
 \usepackage{titlesec} % per formato custom dei titoli dei capitoli
 % \usepackage{hyperref} % per i collegamenti ipertestuali, da togliere per la consegna della tesi
+\usepackage[output-decimal-marker={,}]{siunitx} %unita' di misura con convenzioni tipografiche italiane che prevedono la virgola e non il punto
 
 %%%%%%%%%%%%%%
 % supporto lettere accentate
@@ -84,7 +85,7 @@
     \tableofcontents
     \afterpage{\null\thispagestyle{empty}\clearpage}
           
-    % gruppo per definizone di successione capitoli senza interruzione di pagina
+    % gruppo per definizione di successione capitoli senza interruzione di pagina
     \begingroup
       % nessuna interruzione di pagina tra capitoli
       % ridefinizione dei comandi di clear page
@@ -130,16 +131,27 @@
       % \input oppure \include
       %
       \input{introduction}
+      % \newpage
       \afterpage{\null\thispagestyle{empty}\clearpage}
+      
       \input{state_of_art}
-      \afterpage{\null\thispagestyle{empty}\clearpage}
+      \newpage
+      % \afterpage{\null\thispagestyle{empty}\clearpage}
+      
       \input{system_design}
+      % \newpage
       \afterpage{\null\thispagestyle{empty}\clearpage}
+      
       \input{implementation}
+      % \newpage
       \afterpage{\null\thispagestyle{empty}\clearpage}
+      
       \input{evaluation}
+      % \newpage
       \afterpage{\null\thispagestyle{empty}\clearpage}
+      
       \input{conclusions}
+      % \newpage
       \afterpage{\null\thispagestyle{empty}\clearpage}
       
     \endgroup

@@ -46,48 +46,72 @@ The main block I worked on is the data collector. I developed the logic behind t
 The flowchart representing the data collector logic is shown in figure ~\ref{fig:flowcollect}. When the data collector is turned on, the system searches for the connected Wi-Fi dongle and puts it in monitor mode to perform the packet sniffing. Initially, a packet counter is set = 0 and the actual time is saved. When a packet is received it checks if it is a probe request frame and if it is not, it is thrown away (using Scapy).
 When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet was revealed is given by an RTC (Real Time Clock) board and together with the other information are saved temporarily in the RAM (Random Access Memory). The packet counter increases by one.
 
-Among the information that can be extracted from the MAC address before performing the anonymization there are the OUI (Organizationally Unique Identifier), from which the manufacturer of the device can be identified, and the local bit, the 7\textsuperscript{th} bit of the MAC address, from which it can be seen whether the MAC address is randomized or not.
-
-\begin{figure}[h]
+\begin{figure}[h!]
 \centering 
-\includegraphics[width=0.7\textwidth]{images/flowcollect} 
+\includegraphics[width=0.62\textwidth]{images/flowcollect} 
 \caption{Flowchart representing the data collector logic.}
 \label{fig:flowcollect}
 \end{figure}
+
+% \begin{wrapfloat}{figure}{I}{0pt} 
+% \includegraphics[width=0.5\textwidth]{images/flowcollect}
+% \caption{Flowchart representing the data collector logic.}
+% \label{fig:flowcollect}
+% \end{wrapfloat}
+
+Among the information that can be extracted from the MAC address before performing the anonymization there are the OUI (Organizationally Unique Identifier), from which the manufacturer of the device can be identified, and the local bit, the 7\textsuperscript{th} bit of the MAC address, from which it can be seen whether the MAC address is randomized or not.
 
 After extracting the information, there is the anonymization of the MAC address to preserve the privacy of the users and comply with the GDPR. This is made only for the MAC addresses that are not randomized, i.e. the real MAC addresses of the devices present. Anonymization is performed at this point in the architecture because then there are no more privacy problems, this work does not have to be done from the Back-End and for reasons of data security in case of a data breach during transmission.
 This process consists of hashing the MAC address using BLAKE2s, an implementation of the BLAKE2  cryptographic hash function based on BLAKE  \footnote{https://blake2.net/} (BLAKE3 is faster but still under development). BLAKE2 is faster than MD5, SHA-1, SHA-2 and SHA-3, and provides security superior to SHA-2 and similar to that of SHA-3. BLAKE2 supports keying and salting, and can output digests from 1 up to 32 bytes for BLAKE2s. This hash function is the ideal for changing hash results every 24 hours or predefined time, simply modifying the key or adding a different value of salt. This is made for privacy reasons and to avoid tracing the MAC address although it is not the real one but always the same after hashing.
 If the anonymization changes the state of the local bit, the previous state is forced/imposed to preserve this information on randomization, which can be used in the cleaning phase.
 
 Once the pre-processing of the data is completed, we decided to process the collected data in batches and therefore there are to check 2 batch criteria, based on a maximum number of packets and a maximum time since the last batch transmission. These parameters have to be set according to the use case/case study, once one of these is reached it is possible to decide what to do with this data by running the data management flowchart (shown in figure ~\ref{fig:flowdata}).
-Higher values of the parameters allow us to avoid a continuous transmission of data and to fill the queue on the broker or in the lack of a connection, to open the file to save the data every time a packet is detected. On the other hand, choosing smaller values of the parameters reduces estimation delay, making the system more responsive. In our experiments, we used intermediate values with a maximum number of packets of 50 and a maximum time since the last batch transmission of 60 seconds, which is a good trade-off between congestion and transmission delay.
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.7\textwidth]{images/flowdata} 
+\includegraphics[width=0.6\textwidth]{images/flowdata} 
 \caption{Flowchart representing the data management logic.}
 \label{fig:flowdata}
 \end{figure}
 
+Higher values of the parameters allow us to avoid a continuous transmission of data and to fill the queue on the broker or in the lack of a connection, to open the file to save the data every time a packet is detected. On the other hand, choosing smaller values of the parameters reduces estimation delay, making the system more responsive. In our experiments, we used intermediate values with a maximum number of packets of 50 and a maximum time since the last batch transmission of 60 seconds, which is a good trade-off between congestion and transmission delay.
+
+
 When the batch is ready, the algorithm for managing what to do with the data starts. If there is no connection, the collected data is stored locally (using json.dump()) to be sent later when a connection is found. After that, the data is deleted from the RAM.
 Instead, if there is a connection with the MQTT broker, the collected data is published to the dedicated queue (Collected data, converted in a string using json.dumps() to be published). If the publication is successful, the data is deleted from the RAM. Otherwise, it is stored locally (using json.dump()), subsequently deleted from the RAM and finally the system searches again for a connection.
+
+\begin{figure}[h]
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.97\textwidth]{images/flowconnection}
+\caption{Flowchart representing the connection research logic.}
+\label{fig:flowconnection}
+\end{minipage}
+\ \hspace{2mm} \hspace{3mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.97\textwidth]{images/flowstorage}
+\caption{Flowchart representing the stored data publishing logic.}
+\label{fig:flowstorage}
+\end{minipage}
+\end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.5\textwidth]{images/flowconnection} 
+% \caption{Flowchart representing the connection research logic.}
+% \label{fig:flowconnection}
+% \end{figure}
 
 When the data collector is turned on, the system searches also for a connection with the MQTT broker. In figure ~\ref{fig:flowconnection} shows the flowchart explaining the logic behind this. Initially, the connection is set = False and the system checks whether the data collector has a peripheral with an IP address for Internet access.
 When it has an IP address, a Paho MQTT Client with its credentials tries connecting to the MQTT broker. When the broker is reachable and accepts the client connection, the connection is set = True and if there is data stored locally, it can be published by running the flowchart for the publication of the stored data (shown in figure ~\ref{fig:flowstorage}).
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.5\textwidth]{images/flowconnection} 
-\caption{Flowchart representing the connection research logic.}
-\label{fig:flowconnection}
-\end{figure}
-
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.5\textwidth]{images/flowstorage} 
-\caption{Flowchart representing the stored data publishing logic.}
-\label{fig:flowstorage}
-\end{figure}
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.5\textwidth]{images/flowstorage} 
+% \caption{Flowchart representing the stored data publishing logic.}
+% \label{fig:flowstorage}
+% \end{figure}
 
 The data is read from the local storage (using json.loads()) and is published to the dedicated queue (Collected data, converted in a string using json.dumps() to be published). 
 If the publication is successful, the data is deleted from the local storage. Otherwise, it remains stored locally and the system searches again for a connection.
@@ -141,37 +165,69 @@ The flowchart representing the data Back-End logic is shown in figure ~\ref{fig:
 
 When a time slot is over, the data of the current time slot is read from the local storage. An RSSI-based threshold is applied to delete data from devices too far from the data collector (to be decided based on the use case/case study, the position of the sensors has to be taken into consideration, as well the environment in which they are located, for cleaning and analysis). Random encounters are removed, as shown in the flowchart in figure ~\ref{fig:flowrandom}. Unique devices are extracted with their occurrence timestamps. If there are devices that appear only once or for a short time,  they are removed. These parameters have to be adapted at the use case/case study (and randomized addresses are removed with this).
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.5\textwidth]{images/flowrandom} 
-\caption{Flowchart representing the logic of removing casual encounters.}
-\label{fig:flowrandom}
-\end{figure}
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.5\textwidth]{images/flowrandom} 
+% \caption{Flowchart representing the logic of removing casual encounters.}
+% \label{fig:flowrandom}
+% \end{figure}
 
 Then a blacklist is made to remove the ever-present devices or devices revealed too many times during the day, as shown in the flowchart in figure ~\ref{fig:flowblacklist}. A list of occurrences is created with a maximum interrupt time of delta\_t. If there are devices that appears many times or for a long time, they are blacklisted. These parameters have to be adapted at the use case/case study.
 At this point, it is possible to get the number of devices present in the place of interest for each timestamp based on the occurrences of the devices not in the blacklist. 
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.5\textwidth]{images/flowblacklist} 
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.5\textwidth]{images/flowblacklist} 
+% \caption{Flowchart representing the logic of making the blacklist.}
+% \label{fig:flowblacklist}
+% \end{figure}
+
+\begin{figure}
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.9\textwidth]{images/flowrandom}
+\caption{Flowchart representing the logic of removing casual encounters.}
+\label{fig:flowrandom}
+\end{minipage}
+\ \hspace{2mm} \hspace{3mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.9\textwidth]{images/flowblacklist}
 \caption{Flowchart representing the logic of making the blacklist.}
 \label{fig:flowblacklist}
+\end{minipage}
 \end{figure}
 
 Finally, data analysis is performed, as shown in the flowchart in figure ~\ref{fig:flowML}. Trend (raising/lowering) and seasonality (repetition of the components) of the number of devices are extracted using a decomposition of the corresponding temporal series.Once these two variables are known, it is possible to apply to them the correct polynomial approximation relating to the current time slot to get the forecast of the people present in the place of interest. The best degree and coefficients of the polynomial approximation are calculated during the training phase/preparation of the model for each time slot of each day of the week, using manually-collected ground truth. Figure ~\ref{fig:flowtrainML} shows the flowchart of the logic used in that phase.
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.3\textwidth]{images/flowML} 
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.3\textwidth]{images/flowML} 
+% \caption{Flowchart representing the data analysis logic.}
+% \label{fig:flowML}
+% \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.3\textwidth]{images/flowtrainML} 
+% \caption{Flowchart representing the ML training logic.}
+% \label{fig:flowtrainML}
+% \end{figure}
+
+\begin{figure}
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.6\textwidth]{images/flowML}
 \caption{Flowchart representing the data analysis logic.}
 \label{fig:flowML}
-\end{figure}
-
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.3\textwidth]{images/flowtrainML} 
-\caption{Flowchart representing the training logic.}
+\end{minipage}
+\ \hspace{2mm} \hspace{3mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.6\textwidth]{images/flowtrainML}
+\caption{Flowchart representing the ML training logic.}
 \label{fig:flowtrainML}
+\end{minipage}
 \end{figure}
 
 I did not develop the part of machine learning, but I integrated an existing one into this project to get the final results, i.e. the number of people/users in the place of interest for each timestamp. Then the results, when available, are published to the dedicated queue (Back-End results) to be received by the subscribed consumer who could use this information to improve his business.

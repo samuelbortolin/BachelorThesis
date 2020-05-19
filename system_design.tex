@@ -9,7 +9,7 @@ In this section, the methodology and the choices in the system design is present
 \label{sec:sysarc}
 \vspace{0.2 cm} 
 
-In a place of interest, there are people/users with their devices that are sending Wi-Fi packets, if they have the Wi-Fi device turned on. The purpose of our system is to exploit these packets to infer the number of people present.The system architecture of the developed system is shown in figure ~\ref{fig:architecture}. 
+In a place of interest, there are people/users with their devices that are sending Wi-Fi packets, if they have the Wi-Fi device turned on. The purpose of our system is to exploit these packets to infer the number of people present. The system architecture of the developed system is shown in figure ~\ref{fig:architecture}. 
 This is a distributed architecture, in fact, there are three main components on different platforms that cooperate over a communication network in order to achieve this goal.
 
 \begin{figure}[h]
@@ -21,7 +21,7 @@ This is a distributed architecture, in fact, there are three main components on 
 
 The first block of the system is a data collector (implemented on a Raspberry Pi 2B) which is located in the place of interest. It performs a preprocessing of the data (distributed work) with its functionalities: sniffing of Wi-Fi packets, capture the probe request frames; extract the useful information from these; detect the current timestamp; anonymize the MAC address using a hash function (no more privacy issues); check the internet connection; if there is no connection, save the data in the local storage; if there is a connection, publish the collected data to the dedicated queue (Collected data).
 
-The system uses the MQTT protocol for data forwarding, an MQTT broker (situated TBD, it must have a static IP address to be accessible, implemented using Mosquitto MQTT broker) with 2 dedicated queues: one for the collected data (published by sensors and received by the subscribed Back-End) and the other one for the Back-End results (published by the Back-End and received by the subscribed consumer).
+The system uses the MQTT protocol for data forwarding, an MQTT broker (situated TBD, it must have a static IP address to be accessible, implemented using Mosquitto MQTT broker) with 2 dedicated queues: one for the collected data (published by the data collector and received by the subscribed Back-End) and the other one for the Back-End results (published by the Back-End and received by the subscribed consumer).
 
 The Back-End (situated TBD, implemented on a pc/server or running on Google Colaboratory) deals with collected data cleaning -- (to be decided based on the use case/case study: RSSI thresholding) remove random encounters (and randomized addresses are removed with this), make a blacklist to remove the ever-present devices or devices revealed too many times during the day and then get the number of devices present in the place of interest --, data analysis using Machine Learning -- fit the degree and the coefficients of the polynomial approximation using the trend and the seasonality of the number of devices detected to obtain the number of people present -- and publication of the results to the dedicated queue (Back-End results).
 
@@ -43,7 +43,7 @@ This architecture is scalable, it could admit many sensors physically distribute
 
 The main block I worked on is the data collector. I developed the logic behind this block, with particular attention in the research of the connection and in the management of the data collected.
 
-The flowchart representing the data collector logic is shown in figure ~\ref{fig:flowcollect}. When the data collector is turned on, the system searches for the connected Wi-Fi dongle and puts it in monitor mode to perform the packet sniffing. Initially, a packet counter is set = 0 and the actual time is saved. When a packet is received it checks if it is a probe request frame and if it is not, it is thrown away (using Scapy).
+The flowchart representing the data collector logic is shown in figure ~\ref{fig:flowcollect}. When the data collector is turned on, the system searches for the connected Wi-Fi dongle and puts it in monitor mode to perform the packet sniffing. Initially, a packet counter is set = 0 and the actual time is saved. When a packet is received, it checks if it is a probe request frame and if it is not, it is thrown away (using Scapy).
 When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet was revealed is given by an RTC (Real Time Clock) board and together with the other information are saved temporarily in the RAM (Random Access Memory). The packet counter increases by one.
 
 \begin{figure}[h!]
@@ -103,7 +103,7 @@ Instead, if there is a connection with the MQTT broker, the collected data is pu
 % \label{fig:flowconnection}
 % \end{figure}
 
-When the data collector is turned on, the system searches also for a connection with the MQTT broker. In figure ~\ref{fig:flowconnection} shows the flowchart explaining the logic behind this. Initially, the connection is set = False and the system checks whether the data collector has a peripheral with an IP address for Internet access.
+When the data collector is turned on, the system searches also for a connection with the MQTT broker. Figure ~\ref{fig:flowconnection} shows the flowchart explaining the logic behind this. Initially, the connection is set = False and the system checks whether the data collector has a peripheral with an IP address for Internet access.
 When it has an IP address, a Paho MQTT Client with its credentials tries connecting to the MQTT broker. When the broker is reachable and accepts the client connection, the connection is set = True and if there is data stored locally, it can be published by running the flowchart for the publication of the stored data (shown in figure ~\ref{fig:flowstorage}).
 
 % \begin{figure}[h]
@@ -136,14 +136,16 @@ Each subscription/publication to the broker can specify a quality of service mea
   \item 2: Exactly once - the sender (publisher or broker) and receiver (broker or the subscribers) engage in a two-level handshake to ensure only one copy of the message is received (assured delivery).
 \end{itemize}
 
-For these illustrated features, the MQTT protocol is used in the system for data forwarding. A broker (situated TBD, it must have a static IP address to be accessible, implemented using Mosquitto MQTT broker) with two dedicated queues is used, one for the collected data (published by sensors and received by the subscribed Back-End) and the other one for the Back-End results (published by the Back-End and received by the subscribed consumer).
+For these illustrated features, the MQTT protocol is used in the system for data forwarding. A broker (situated TBD, it must have a static IP address to be accessible, implemented using Mosquitto MQTT broker) with two dedicated queues is used, one for the collected data (published by the data collector and received by the subscribed Back-End) and the other one for the Back-End results (published by the Back-End and received by the subscribed consumer).
 The broker is set up to allow only connections from the data collector, the Back-End and the consumer. They have their own credentials for authentication.
 
-Client(client\_id="name", clean\_session=False), connect("broker\_address", port=1883)
+Client(client\_id=``name'', clean\_session=False), connect(``broker\_address'', port=1883)
 
-username\_pw\_set("username", password="password")
+username\_pw\_set(``username'', password=``password'')
 
-publish("topic", payload=json.dumps(data), qos=2), subscribe("topic", qos=2)
+publish(``topic'', payload=json.dumps(data), qos=2)
+
+subscribe(``topic'', qos=2)
 
 The clean\_session is set = False. If this connection is interrupted by any circumstances, the MQTT broker can buffer all messages and send them to the client when it is back online. The QoS is set = 2 both in publish and subscribe. To ensure exactly one copy of the data, no loss, no duplicates to clean. Data is converted in string using json.dumps() to be published and forwarded.
 
@@ -154,7 +156,7 @@ The clean\_session is set = False. If this connection is interrupted by any circ
 
 The two main Back-End functionalities are data cleaning and data analysis.(situated TBD, implemented on a pc or running on Google Colaboratory)
 
-The flowchart representing the data Back-End logic is shown in figure ~\ref{fig:flowcleaner}. Initially, the Back-End subscribes to the collected data queue to receive the data when published by the sensors. Input data is managed by adding corollary information for future analysis and is stored locally.
+The flowchart representing the data Back-End logic is shown in figure ~\ref{fig:flowcleaner}. Initially, the Back-End subscribes to the collected data queue to receive the data when published by the data collector. Input data is managed by adding corollary information for future analysis and is stored locally.
 
 \begin{figure}[h]
 \centering 
@@ -163,7 +165,7 @@ The flowchart representing the data Back-End logic is shown in figure ~\ref{fig:
 \label{fig:flowcleaner}
 \end{figure}
 
-When a time slot is over, the data of the current time slot is read from the local storage. An RSSI-based threshold is applied to delete data from devices too far from the data collector (to be decided based on the use case/case study, the position of the sensors has to be taken into consideration, as well the environment in which they are located, for cleaning and analysis). Random encounters are removed, as shown in the flowchart in figure ~\ref{fig:flowrandom}. Unique devices are extracted with their occurrence timestamps. If there are devices that appear only once or for a short time,  they are removed. These parameters have to be adapted at the use case/case study (and randomized addresses are removed with this).
+When a time slot is over, the data of the current time slot is read from the local storage. An RSSI-based threshold is applied to delete data from devices too far from the data collector (to be decided based on the use case/case study, the position of the data collector has to be taken into consideration, as well the environment in which they are located, for cleaning and analysis). Random encounters are removed, as shown in the flowchart in figure ~\ref{fig:flowrandom}. Unique devices are extracted with their occurrence timestamps. If there are devices that appear only once or for a short time,  they are removed. These parameters have to be adapted at the use case/case study (and randomized addresses are removed with this).
 
 % \begin{figure}[h]
 % \centering 

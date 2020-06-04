@@ -44,8 +44,7 @@ This architecture is scalable, it could admit many sensors physically distribute
 The main block I worked on is the data collector. I developed the logic behind this block, with particular attention in the research of the connection and in the management of the data collected.
 
 The flowchart representing the data collector logic is shown in figure~\ref{fig:flowcollect}. When the data collector is turned on, the system searches for the connected Wi-Fi dongle and puts it in monitor mode to perform the packet sniffing. Initially, a packet counter is set = 0 and the actual time is saved. When a packet is received, it checks if it is a probe request frame and if it is not, it is thrown away (using Scapy).
-When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet was revealed is given by an RTC (Real Time Clock) board and together with the other information are saved temporarily in the RAM (Random Access Memory). The packet counter increases by one.
-
+When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet was revealed is given by an RTC (Real Time Clock) board and together with the other information are saved and the packet counter increases by one.
 
 \begin{figure}[h!]
 \centering 
@@ -77,8 +76,8 @@ Once the pre-processing of the data is completed, we decided to process the coll
 
 Higher values of the parameters allow us to avoid a continuous transmission of data and to fill the queue on the broker or in the lack of a connection, to open the file to save the data every time a packet is detected. On the other hand, choosing smaller values of the parameters reduces estimation delay, making the system more responsive. In our experiments, we used intermediate values with a maximum number of packets of 50 and a maximum time since the last batch transmission of 60 seconds, which is a good trade-off between congestion and transmission delay.
 
-When the batch is ready, the algorithm for managing what to do with the data starts. If there is no connection, the collected data is stored locally (using json.dump()) to be sent later when a connection is found. After that, the data is deleted from the RAM.
-Instead, if there is a connection with the MQTT broker, the collected data is published to the dedicated queue (Collected data, converted in a string using json.dumps() to be published). If the publication is successful, the data is deleted from the RAM. Otherwise, it is stored locally (using json.dump()), subsequently deleted from the RAM and finally the system searches again for a connection.
+When the batch is ready, the algorithm for managing what to do with the data starts. If there is no connection, the collected data is stored locally (using json.dump()) to be sent later when a connection is found.
+Instead, if there is a connection with the MQTT broker, the collected data is published to the dedicated queue (Collected data, converted in a string using json.dumps() to be published). If the publication is successful, the flowchart ends. Otherwise, it is stored locally (using json.dump()), subsequently the system searches again for a connection.
 
 \begin{figure}[h]
 \begin{minipage}[b]{8.5cm}
@@ -121,7 +120,7 @@ If the publication is successful, the data is deleted from the local storage. Ot
 \label{sec:forwarding}
 \vspace{0.2 cm} 
 
-MQTT \footnote{ website: http://mqtt.org/ } stands for Message Queuing Telemetry Transport. It is a publish/subscribe, extremely simple and lightweight messaging protocol. It is designed to be bandwidth-efficient and to use little battery power. It is efficient in distributing information to one or many receivers. Information is organized in topics. Topics are treated as a hierarchy, using a slash (/) as a separator. These principles make it the ideal protocol for the emerging world of machine-to-machine/Internet of Things and for mobile applications where bandwidth and battery power are limited. It is useful for connections with remote locations, as in our case to send a huge amount of data to the Back-End. Moreover, it can easily scale from a single device to thousands
+MQTT \footnote{ website: ​http://mqtt.org/ } stands for Message Queuing Telemetry Transport. It is a publish/subscribe, extremely simple and lightweight messaging protocol. It is designed to be bandwidth-efficient and to use little battery power. It is efficient in distributing information to one or many receivers. Information is organized in topics. Topics are treated as a hierarchy, using a slash (/) as a separator. These principles make it the ideal protocol for the emerging world of machine-to-machine/Internet of Things and for mobile applications where bandwidth and battery power are limited. It is useful for connections with remote locations, as in our case to send a huge amount of data to the Back-End. Moreover, it can easily scale from a single device to thousands.
 
 The MQTT protocol defines two types of network entities: a message broker and clients. An MQTT broker is a software (in our case we used Mosquitto) running on a computer that receives all messages from the clients and then routes them to the appropriate destination clients. An MQTT client is any device that runs an MQTT library (in our case we used paho-mqtt for Python) and connects to an MQTT broker over a network.
 For security reasons, the MQTT broker can be configured to require clients to use a username and password when connecting. If they match allowed credentials, clients can publish/subscribe to the topics. Otherwise, the connection is refused.
@@ -155,9 +154,9 @@ The QoS is set = 2 both in publish and subscribe. To ensure exactly one copy of 
 \label{sec:analysis}
 \vspace{0.2 cm} 
 
-The two main Back-End functionalities are data cleaning and data analysis.(situated TBD, implemented on a pc or running on Google Colaboratory)
+The two main Back-End functionalities are data cleaning and data analysis. (situated TBD, implemented on a pc or running on Google Colaboratory)
 
-The flowchart representing the data Back-End logic is shown in figure~\ref{fig:flowcleaner}. Initially, the Back-End subscribes to the collected data queue to receive the data when published by the data collector. Input data is managed by adding corollary information for future analysis and is stored locally.
+The flowchart representing the data Back-End logic is shown in figure~\ref{fig:flowcleaner}. Initially, the Back-End subscribes to the collected data queue to receive the data when published by the data collector. Input data is managed by adding corollary information for future analysis and is stored in the database (in our case we used MongoDB for its simplicity in handling json files).
 
 \begin{figure}[h]
 \centering 
@@ -166,7 +165,7 @@ The flowchart representing the data Back-End logic is shown in figure~\ref{fig:f
 \label{fig:flowcleaner}
 \end{figure}
 
-When a time slot is over, the data of the current time slot is read from the local storage. An RSSI-based threshold is applied to delete data from devices too far from the data collector (to be decided based on the use case/case study, the position of the data collector has to be taken into consideration, as well the environment in which they are located, for cleaning and analysis). Random encounters are removed, as shown in the flowchart in figure~\ref{fig:flowrandom}. Unique devices are extracted with their occurrence timestamps. If there are devices that appear only once or for a short time, they are removed. These parameters have to be adapted at the use case/case study (and randomized addresses are removed with this).
+When a time slot is over, the data of the current time slot is read from the database. An RSSI-based threshold is applied to delete data from devices too far from the data collector (to be decided based on the use case/case study, the position of the data collector has to be taken into consideration, as well the environment in which they are located, for cleaning and analysis). Random encounters are removed, as shown in the flowchart in figure~\ref{fig:flowrandom}. Unique devices are extracted with their occurrence timestamps. If there are devices that appear only once or for a short time, they are removed. These parameters have to be adapted at the use case/case study (and randomized addresses are removed with this).
 
 % \begin{figure}[h]
 % \centering 

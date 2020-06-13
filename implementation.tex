@@ -2,8 +2,10 @@
 \label{cha:implementation}
 \vspace{0.4 cm} 
 
-This chapter presents how the system is implemented.
-Starting by describing the implementation of the data collector on a Raspberry Pi and then explaining how the Mosquitto MQTT Broker, the MongoDB database and the two Back-End parts for storing and analyzing the data were implemented on the U-Hopper server. After this section, it will be clear how the system was implemented for the testing and validation, that are discussed in the next section.
+Write about the implementation of the system \dots
+
+This chapter presents how the components of the system have been implemented.
+Starting by describing the implementation of the data collector on a Raspberry Pi and then explaining how the Mosquitto MQTT Broker, the MongoDB database and the two Back-End parts, one for receiving and storing the data and the other one for analyzing the data, has been implemented on Docker containers. After this section, it will be clear how the system was implemented for the testing and validation, that are discussed in the next section.
 
 
 \section{Data collector implementation}
@@ -12,17 +14,17 @@ Starting by describing the implementation of the data collector on a Raspberry P
 
 Write how the sniffer has been implemented on the Raspberry Pi \dots
 
-Raspberry pi model 2B
+Data collector on a Raspberry Pi model 2B
 
-EDUP 802.11n Wi-Fi Dongle + Scapy for Wi-Fi packets sniffing
+EDUP 802.11n Wi-Fi Dongle (Range ~10 meters) + Scapy for Wi-Fi packets sniffing
 
 RTC Board for timestamp detection
 
-Paho-MQTT per the MQTT transmission
+BLAKE2s for MAC address anonymization
 
 Netifaces for managing the connection
 
-BLAKE2s for MAC address anonymization
+Paho-MQTT for the MQTT transmission
 
 
 % \section{Implementation of broker MQTT}
@@ -40,12 +42,12 @@ Write how the Back-End for analysis has been implemented \dots
 
 Docker Containers:
 
-Mosquitto \footnote{ website: https://hub.docker.com/\_/eclipse-mosquitto }
+MQTT broker: Mosquitto \footnote{ website: https://hub.docker.com/\_/eclipse-mosquitto }
 
-MongoDB \footnote{ website: https://hub.docker.com/\_/mongo }
+Database: MongoDB \footnote{ website: https://hub.docker.com/\_/mongo }
 
-Receiver with MQTT client using paho-MQTT and pymongo for storing data on MongoDB
+Receiver with MQTT client using paho-MQTT for receiving the data and Mongo client using pymongo for storing data on MongoDB
 
-Analyzer uses pymongo and pandas to read and manage the data
+Analyzer with Mongo client using pymongo and pandas to read and manage the data
 
-Sklearn is used to analyze this data and implementing the machine learning part
+Sklearn is used to analyze this data and to implement the machine learning part

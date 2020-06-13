@@ -4,6 +4,9 @@
 
 Write about the evaluation case study \dots
 
+In chapter 5 the proposed system is validated and the results are evaluated.
+Starting by describing where and how the system is tested for the experimental validation and then presenting an evaluation of the achieved results. The data collector on a Raspberry Pi has been placed in a place of social interest. In this place of social interest, I manually collected the ground truth for training and evaluating the model. The Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper server. The final Back-End part for analyzing the data has been executed on my computer to adapt the parameters and train the Machine Learning model. After this section, it will be clear how the system has been validated and what the results achieved by the proposed system are. Overall conclusions are discussed in the next section.
+
 
 \section{Experimental validation}
 \label{sec:expval}
@@ -11,9 +14,52 @@ Write about the evaluation case study \dots
 
 Write about the experiments \dots
 
+Experimental environment considerations.
+
+Management of the different time-series + drawings about that:
+GT: random point process
+Probe revelations: random point process
+Presence of devices: temporal range based on revelations
+
+Data collector on a Raspberry Pi model 2B has been placed in a place of social interest.
+
+In this place of social interest, I manually collected the ground truth on my computer.
+
+Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper server.
+
+Final Back-End part for analyzing the data has been executed on my computer. Setting of the cleaning parameters. Training and preparation of the ML model with the ground truth.
+
+In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
+
 
 \section{Evaluation of the results}
 \label{sec:evalres}
 \vspace{0.2 cm} 
 
 Write the evaluation \dots
+
+We calculated the following parameters for evaluating the KPIs, taking as the ground truth the number of people that I have manually annotated, with a random look strategy of some hours per day in different time slots:
+
+Error mean = mean(abs(people\_present - people\_estimated))
+
+scaled\_MSE\_trend +=  $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$
+
+Scaled\_MSE\_trend/count = $\frac{scaled\_MSE\_trend}{rivelations}$
+
+scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$
+
+Scaled\_MAE\_trend/count = $\frac{scaled\_MAE\_trend}{rivelations}$
+
+R2 score = r2\_score(people\_present , people\_estimated)
+
+Correlation with revealed devices:
+
+Spearman's rank correlation coefficient = spearmanr(people\_present, devices)
+
+Pearson correlation coefficient = pearsonr(people\_present, devices)
+
+Correlation with estimated people:
+
+Spearman's rank correlation coefficient = spearmanr(people\_present, people\_estimated)
+
+Pearson correlation coefficient = pearsonr(people\_present, people\_estimated)

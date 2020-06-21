@@ -2,26 +2,31 @@
 \label{cha:implementation}
 \vspace{0.4 cm} 
 
-Write about the implementation of the system \dots
-
 This chapter presents how the components of the system have been implemented.
-Starting by describing the implementation of the data collector on a Raspberry Pi and then explaining how the Mosquitto MQTT Broker, the MongoDB database and the two Back-End parts, one for receiving and storing the data and the other one for analyzing the data, has been implemented on Docker containers. After this chapter, it will be clear how the system was implemented for the testing and validation, that are discussed in the next chapter.
+Starting by describing the implementation of the data collector on a Raspberry Pi and then explaining how the Mosquitto MQTT Broker, the MongoDB database and the two Back-End parts, one for receiving and storing the data and the other one for analyzing the data, has been implemented using Docker containers. After this chapter, it will be clear how the system was implemented for the testing and validation, that are discussed in the next chapter.
 
 
 \section{Data collector implementation}
 \label{sec:collector}
 \vspace{0.2 cm} 
 
-Write how the sniffer has been implemented on the Raspberry Pi \dots
-
-Data collector on a Raspberry Pi model 2B using:
+Data collector implemented on a Raspberry Pi model 2B using:
 \begin{itemize}
-  \item EDUP 802.11n Wi-Fi Dongle (Range $\sim$ 10 meters) + Scapy for Wi-Fi packets sniffing
-  \item RTC Board for timestamp detection
-  \item BLAKE2s for MAC address anonymization
-  \item Netifaces for managing the connection
-  \item Paho-MQTT for the MQTT transmission
+  \item A EDUP 802.11n Wi-Fi Dongle (Range $\sim$ 10 meters) is used with the Scapy library for Wi-Fi packets sniffing and information extraction.
+  \item A Real Time Clock Module is used for timestamp detection.
+  \item From hashlib Python module BLAKE2s, an implementation of the BLAKE2, is used for MAC address anonymization.
+  \item JSON Python module is used to store data locally and to read and publish them later.
+  \item Another EDUP 802.11n Wi-Fi Dongle (Range $\sim$ 10 meters) is used with the Netifaces library for managing the connection.
+  \item Paho-MQTT library is used for running the MQTT client and the data forwarding.
 \end{itemize}
+
+Client(client\_id=``name'', clean\_session=False), connect(``broker\_address'', port=1883)
+
+username\_pw\_set(``username'', password=``password'')
+
+publish(``topic'', payload=json.dumps(data), qos=2)
+
+subscribe(``topic'', qos=2)
 
 
 % \section{Implementation of broker MQTT}
@@ -35,13 +40,11 @@ Data collector on a Raspberry Pi model 2B using:
 \label{sec:server}
 \vspace{0.2 cm} 
 
-Write how the Back-End for analysis has been implemented \dots
-
-Docker Containers:
+Docker Containers running on the server:
 \begin{itemize}
-  \item MQTT broker: Mosquitto\footnote{ website: \url{https://hub.docker.com/_/eclipse-mosquitto} }
-  \item Database: MongoDB\footnote{ website: \url{https://hub.docker.com/_/mongo} }
-  \item Receiver with MQTT client using paho-MQTT for receiving the data and Mongo client using pymongo for storing data on MongoDB
-  \item Analyzer with Mongo client using pymongo and pandas to read and manage the data
-  \item Sklearn is used to analyze this data and to implement the machine learning part
+  \item As MQTT broker we used Eclipse Mosquitto\footnote{ website: \url{https://hub.docker.com/_/eclipse-mosquitto} }, an open-source MQTT broker.
+  \item As database we used MongoDB\footnote{ website: \url{https://hub.docker.com/_/mongo} } for its simplicity in handling JSON files.
+  \item For running the receiver MQTT client we used Paho-MQTT for receiving the data and for running a MongoClient we used pymongo for storing data on MongoDB.
+  \item In the analyzer, we used pymongo and pandas to read and manage the data stored in MongoDB with a MongoClient to get the data and a Pandas DataFrame to clean the data and get the number of devices.
+  \item Sklearn library is used to analyze the cleaned data and the ground truth. This library implements the machine learning part and then metrics are calculated.
 \end{itemize}

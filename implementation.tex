@@ -29,11 +29,12 @@ publish(``topic'', payload=json.dumps(data), qos=2)
 subscribe(``topic'', qos=2)
 
 
-% \section{Implementation of broker MQTT}
-% \label{sec:broker}
-% \vspace{0.2 cm} 
+\section{Tool for ground truth management}
+\label{sec:toolgt}
+\vspace{0.2 cm} 
 
-% Write how the broker MQTT has been implemented \dots
+I developed two scripts to manage the ground truth. One for collecting the ground truth and made the revelations in the place of interest. When the number of people present is written on the input of the program, it saves this information with the timestamp, the day of the week on a file.
+The other script is used to load the collected ground truth in the MongoDB using PyMongo MongoClient for accessing the database and storing data.
 
 
 \section{Server implementation}
@@ -44,7 +45,9 @@ Docker Containers running on the server:
 \begin{itemize}
   \item As MQTT broker we used Eclipse Mosquitto\footnote{ website: \url{https://hub.docker.com/_/eclipse-mosquitto} }, an open-source MQTT broker.
   \item As database we used MongoDB\footnote{ website: \url{https://hub.docker.com/_/mongo} } for its simplicity in handling JSON files.
-  \item For running the receiver MQTT client we used Paho-MQTT for receiving the data and for running a MongoClient we used pymongo for storing data on MongoDB.
-  \item In the analyzer, we used pymongo and pandas to read and manage the data stored in MongoDB with a MongoClient to get the data and a Pandas DataFrame to clean the data and get the number of devices.
-  \item Sklearn library is used to analyze the cleaned data and the ground truth. This library implements the machine learning part and then metrics are calculated.
+  \item For running the receiver MQTT client we used Paho-MQTT for receiving the data and for running a MongoClient we used PyMongo for storing data on MongoDB.
+  \item In the analyzer, we used PyMongo and Pandas to read and manage the data stored in MongoDB with a MongoClient to get the data and a Pandas DataFrame to clean the data and get the number of devices.
+  \item Sklearn library is used to analyze the cleaned data and the ground truth. This library implements the machine learning part.
 \end{itemize}
+
+Finally, I developed a script to calculate the metrics, e.g. error information, and compute the graphs, e.g. histograms, error distribution and comparison of revealed devices and of people estimated with the real number of people present.

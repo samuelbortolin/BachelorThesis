@@ -31,7 +31,7 @@ The final part of the Back-End for data analysis was executed on my computer to 
 
 % In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
 
-The management of the different time processes is shown in figure~\ref{fig:timeseries}:
+The management of the different time processes is shown in figure~\ref{fig:timeprocesses}:
 \begin{itemize}
   \item Probe revelations from the data collector: a random point process with different MAC addresses.
   \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data.
@@ -51,15 +51,55 @@ The management of the different time processes is shown in figure~\ref{fig:times
 \vspace{0.2 cm} 
 
 Once the Machine Learning model is trained with the collected ground truth and the number of devices revealed at the timestamps when the ground truth is collected, the estimates of people are generated in these timestamps. We calculated the following parameters for evaluating the proposed system estimates and satisfy the KPIs (Key Performance Indicators), taking as the ground truth the number of people I manually annotated, with a random look strategy of some hours per day in different time slots:
+\begin{itemize}
+  \item Mean Absolute Error = mean(abs(people\_present - people\_estimated))
+  \item Mean Squared Error = mean(square(people\_present - people\_estimated))
+  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$
+  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$
+\end{itemize}
 
-Mean Absolute Error = mean(abs(people\_present - people\_estimated))
+In figure~\ref{fig:testresults}, some results and useful processing information are reported.
 
-Mean Squared Error = mean(square(people\_present - people\_estimated))
+\begin{figure}[h]
+\centering 
+\includegraphics[width=1\textwidth]{images/testresults} 
+\caption{Illustration of the results and useful processing information.}
+\label{fig:testresults}
+\end{figure}
 
-scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$
+Finally, in figure~\ref{fig:comparison}, ~\ref{fig:differentseries}, ~\ref{fig:absoluteerror}, ~\ref{fig:error}, ~\ref{fig:scatterplot} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
 
-Scaled\_MSE\_trend/count = $\frac{scaled\_MSE\_trend}{rivelations}$
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.8\textwidth]{images/comparison} 
+\caption{Comparison between estimates, revealed devices and ground truth.}
+\label{fig:comparison}
+\end{figure}
 
-scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.8\textwidth]{images/differentseries} 
+\caption{Comparison between estimates, revealed devices and ground truth.}
+\label{fig:differentseries}
+\end{figure}
 
-Scaled\_MAE\_trend/count = $\frac{scaled\_MAE\_trend}{rivelations}$
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.8\textwidth]{images/absoluteerror} 
+\caption{Graph illustrating the distribution of the absolute error.}
+\label{fig:absoluteerror}
+\end{figure}
+
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.8\textwidth]{images/error} 
+\caption{Graph illustrating the distribution of the error.}
+\label{fig:error}
+\end{figure}
+
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.8\textwidth]{images/scatterplot} 
+\caption{Scatter plot illustrating how the error is distributed.}
+\label{fig:scatterplot}
+\end{figure}

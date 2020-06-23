@@ -77,7 +77,7 @@ Once the pre-processing of the data is completed, we decided to process the coll
 Higher values of the parameters allow us to avoid a continuous transmission of data and to fill the queue on the broker or in the lack of a connection, to open the file to save the data every time a packet is detected. On the other hand, choosing smaller values of the parameters reduces estimation delay, making the system more responsive. In our experiments, we used intermediate values with a maximum number of packets of 50 and a maximum time since the last batch transmission of 60 seconds, which is a good trade-off between congestion and transmission delay.
 
 When the batch is ready, the algorithm for managing what to do with the data starts. If there is no connection, the collected data is stored locally to be sent later when a connection is found.
-Instead, if there is a connection with the MQTT broker, the collected data is published to the dedicated queue (converted in a string to be published). If the publication is successful, the flowchart ends. Otherwise, it is stored locally, subsequently the system searches again for a connection.
+Instead, if there is a connection with the MQTT broker, the collected data is published to the dedicated queue. If the publication is successful, the flowchart ends. Otherwise, it is stored locally, subsequently the system searches again for a connection.
 
 \begin{figure}[h!]
 \begin{minipage}[b]{8.5cm}
@@ -103,7 +103,7 @@ Instead, if there is a connection with the MQTT broker, the collected data is pu
 % \end{figure}
 
 When the data collector is turned on, the system searches also for a connection with the MQTT broker. Figure~\ref{fig:flowconnection} shows the flowchart explaining the logic behind this. Initially, the connection is set = False and the system checks whether the data collector has a peripheral with an IP address for Internet access.
-When it has an IP address, a Paho MQTT Client with its credentials tries connecting to the MQTT broker. When the broker is reachable and accepts the client connection, the connection is set = True and if there is data stored locally, it can be published by running the flowchart for the publication of the stored data, shown in figure~\ref{fig:flowstorage}.
+When it has an IP address, a MQTT Client with its credentials tries connecting to the MQTT broker. When the broker is reachable and accepts the client connection, the connection is set = True and if there is data stored locally, it can be published by running the flowchart for the publication of the stored data, shown in figure~\ref{fig:flowstorage}.
 
 % \begin{figure}[h]
 % \centering 
@@ -112,8 +112,7 @@ When it has an IP address, a Paho MQTT Client with its credentials tries connect
 % \label{fig:flowstorage}
 % \end{figure}
 
-The data is read from the local storage and is published to the dedicated queue (converted in a string to be published).
-If the publication is successful, the data is deleted from the local storage. Otherwise, it remains stored locally and the system searches again for a connection.
+The data is read from the local storage and is published to the dedicated queue. If the publication is successful, the data is deleted from the local storage. Otherwise, it remains stored locally and the system searches again for a connection.
 
 
 \section{Data forwarding}
@@ -179,14 +178,14 @@ At this point, it is possible to get the number of devices present in the place 
 \begin{figure}
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.75\textwidth]{images/flowrandom}
+\includegraphics[width=0.55\textwidth]{images/flowrandom}
 \caption{Flowchart representing the logic of removing random encounters.}
 \label{fig:flowrandom}
 \end{minipage}
 \ \hspace{2mm} \hspace{3mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.75\textwidth]{images/flowblacklist}
+\includegraphics[width=0.55\textwidth]{images/flowblacklist}
 \caption{Flowchart representing the logic of making the blacklist.}
 \label{fig:flowblacklist}
 \end{minipage}
@@ -213,14 +212,14 @@ The best degree and coefficients of the polynomial approximation are calculated 
 \begin{figure}
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.45\textwidth]{images/flowML}
+\includegraphics[width=0.3\textwidth]{images/flowML}
 \caption{Flowchart representing the data analysis logic.}
 \label{fig:flowML}
 \end{minipage}
 \ \hspace{2mm} \hspace{3mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.45\textwidth]{images/flowtrainML}
+\includegraphics[width=0.3\textwidth]{images/flowtrainML}
 \caption{Flowchart representing the ML training logic.}
 \label{fig:flowtrainML}
 \end{minipage}

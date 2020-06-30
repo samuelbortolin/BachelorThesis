@@ -67,7 +67,9 @@ In figure~\ref{fig:testresults}, some results and useful processing information 
 \label{fig:testresults}
 \end{figure}
 
-Finally, in figure~\ref{fig:comparison}, ~\ref{fig:differentseries}, ~\ref{fig:absoluteerror}, ~\ref{fig:error}, ~\ref{fig:scatterplot} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
+% Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
+
+Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
 
 \begin{figure}[h]
 \centering 
@@ -76,30 +78,94 @@ Finally, in figure~\ref{fig:comparison}, ~\ref{fig:differentseries}, ~\ref{fig:a
 \label{fig:comparison}
 \end{figure}
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.8\textwidth]{images/differentseries} 
-\caption{Comparison between estimates, revealed devices and ground truth.}
-\label{fig:differentseries}
-\end{figure}
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/differentseries} 
+% \caption{Comparison between estimates, revealed devices and ground truth.}
+% \label{fig:differentseries}
+% \end{figure}
 
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.8\textwidth]{images/absoluteerror} 
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/absoluteerror} 
+% \caption{Graph illustrating the distribution of the absolute error.}
+% \label{fig:absoluteerror}
+% \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/errorpres} 
+% \caption{Graph illustrating the distribution of the error.}
+% \label{fig:errorpres}
+% \end{figure}
+
+\begin{figure}[h!]
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.85\textwidth]{images/absoluteerror}
 \caption{Graph illustrating the distribution of the absolute error.}
 \label{fig:absoluteerror}
-\end{figure}
-
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.8\textwidth]{images/error} 
+\end{minipage}
+\ \hspace{2mm} \hspace{3mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.85\textwidth]{images/errorpres}
 \caption{Graph illustrating the distribution of the error.}
-\label{fig:error}
+\label{fig:errorpres}
+\end{minipage}
 \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/scatterplotpres} 
+% \caption{Scatter plot illustrating how the error is distributed in relation to the present number of people.}
+% \label{fig:scatterplotpres}
+% \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/errorest} 
+% \caption{Graph illustrating the distribution of the error.}
+% \label{fig:errorest}
+% \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/scatterplotest} 
+% \caption{Scatter plot illustrating how the error is distributed in relation to the estimated number of people.}
+% \label{fig:scatterplotest}
+% \end{figure}
+
+\begin{figure}[h!]
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.85\textwidth]{images/scatterplotpres}
+\caption{Scatter plot illustrating how the error is distributed in relation to the present number of people.}
+\label{fig:scatterplotpres}
+\end{minipage}
+\ \hspace{2mm} \hspace{3mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=0.85\textwidth]{images/scatterplotest}
+\caption{Scatter plot illustrating how the error is distributed in relation to the estimated number of people.}
+\label{fig:scatterplotest}
+\end{minipage}
+\end{figure}
+
+% In figure~\ref{fig:devicespredictions}, ~\ref{fig:esteemseries} there are some graphs created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the Wi-Fi probe request frames are revealed.
+
+In figure~\ref{fig:devicespredictions} there is a graph created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the Wi-Fi probe request frames are revealed.
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.8\textwidth]{images/scatterplot} 
-\caption{Scatter plot illustrating how the error is distributed.}
-\label{fig:scatterplot}
+\includegraphics[width=0.8\textwidth]{images/devicespredictions} 
+\caption{Comparison between estimates and revealed devices.}
+\label{fig:devicespredictions}
 \end{figure}
+
+% \begin{figure}[h]
+% \centering 
+% \includegraphics[width=0.8\textwidth]{images/esteemseries} 
+% \caption{Comparison between estimates and revealed devices.}
+% \label{fig:esteemseries}
+% \end{figure}

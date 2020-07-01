@@ -31,20 +31,6 @@ The final part of the Back-End for data analysis was executed on my computer to 
 
 % In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
 
-The management of the different time processes is shown in figure~\ref{fig:timeprocesses}:
-\begin{itemize}
-  \item Probe revelations from the data collector: a random point process with different MAC addresses.
-  \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data.
-  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe revealed and devices revealed.
-\end{itemize}
-
-\begin{figure}[h]
-\centering 
-\includegraphics[width=0.9\textwidth]{images/timeprocesses} 
-\caption{Illustration of the management of the different time processes.}
-\label{fig:timeprocesses}
-\end{figure}
-
 
 \section{Evaluation of the results}
 \label{sec:evalres}
@@ -58,13 +44,20 @@ Once the Machine Learning model is trained with the collected ground truth and t
   \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$
 \end{itemize}
 
-In figure~\ref{fig:testresults}, some results and useful processing information are reported.
+In figure~\ref{fig:testresults1} and~\ref{fig:testresults2} some results and useful processing information are reported.
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=1\textwidth]{images/testresults} 
-\caption{Illustration of the results and useful processing information.}
-\label{fig:testresults}
+\includegraphics[width=1\textwidth]{images/testresults1} 
+\caption{Illustration of the results and useful processing information of the first week.}
+\label{fig:testresults1}
+\end{figure}
+
+\begin{figure}[h]
+\centering 
+\includegraphics[width=1\textwidth]{images/testresults2} 
+\caption{Illustration of the results and useful processing information of the second week.}
+\label{fig:testresults2}
 \end{figure}
 
 % Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
@@ -102,14 +95,14 @@ Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:error
 \begin{figure}[h!]
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.85\textwidth]{images/absoluteerror}
+\includegraphics[width=1\textwidth]{images/absoluteerror}
 \caption{Graph illustrating the distribution of the absolute error.}
 \label{fig:absoluteerror}
 \end{minipage}
 \ \hspace{2mm} \hspace{3mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.85\textwidth]{images/errorpres}
+\includegraphics[width=1\textwidth]{images/errorpres}
 \caption{Graph illustrating the distribution of the error.}
 \label{fig:errorpres}
 \end{minipage}
@@ -139,14 +132,14 @@ Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:error
 \begin{figure}[h!]
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.85\textwidth]{images/scatterplotpres}
+\includegraphics[width=1\textwidth]{images/scatterplotpres}
 \caption{Scatter plot illustrating how the error is distributed in relation to the present number of people.}
 \label{fig:scatterplotpres}
 \end{minipage}
 \ \hspace{2mm} \hspace{3mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
-\includegraphics[width=0.85\textwidth]{images/scatterplotest}
+\includegraphics[width=1\textwidth]{images/scatterplotest}
 \caption{Scatter plot illustrating how the error is distributed in relation to the estimated number of people.}
 \label{fig:scatterplotest}
 \end{minipage}

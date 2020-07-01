@@ -226,3 +226,17 @@ The best degree and coefficients of the polynomial approximation are calculated 
 \end{figure}
 
 I did not develop the part of machine learning, but I integrated an existing one into this project to get the final results, i.e. the number of people in the place of interest for each timestamp. Then the results, when available, are published to the dedicated queue (Back-End results) to be received by the subscribed consumer who could use this information to improve his business.
+
+The management of the different time processes is shown in figure~\ref{fig:timeprocesses}:
+\begin{itemize}
+  \item Probe revelations from the data collector: a random point process with different MAC addresses.
+  \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data.
+  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe revealed and devices revealed.
+\end{itemize}
+
+\begin{figure}[h]
+\centering 
+\includegraphics[width=0.9\textwidth]{images/timeprocesses} 
+\caption{Illustration of the management of the different time processes.}
+\label{fig:timeprocesses}
+\end{figure}

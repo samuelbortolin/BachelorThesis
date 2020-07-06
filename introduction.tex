@@ -2,7 +2,10 @@
 \label{cha:intro}
 \vspace{0.4 cm} 
 
-Brief introduction of the internship and the project done at U-Hopper.\footnote{ website: \url{https://www.u-hopper.com/} }
+In this chapter, a brief introduction of the internship and the project done at U-Hopper\footnote{ website: \url{https://www.u-hopper.com/} } is presented.
+I chose to do my internship at U-Hopper, a deep-tech company that develops Big Data Analytics, Business Intelligence and Artificial Intelligence solutions, in the heart of the Dolomites.
+U-Hopper operates at the intersection of three technological axes: Internet of Things, big data and Artificial Intelligence, with the aim of providing analytics to companies and enabling personalized services for their users.
+U-Hopper brings together research and development skills and proven experience in the design and development of high quality ICT solutions.
 
 
 \section{Problem statement}
@@ -24,7 +27,25 @@ The idea can also be extended to provide the same crowding data to its customers
 \label{sec:approach}
 \vspace{0.2 cm} 
 
-This is the approach \dots
+After analyzing the current state of the art and the different methods used in literature to count/estimate people in different fields of applicability and the different implementations, the approach chosen to solve this problem is to use the Wi-Fi Probe Request Frames.
+In the 802.11 standards, there are the management frames to manage the connection between access points and devices. The most important for us is the probe request frame, a particular frame that a device sends to check if there is a known access point in the area that sends a probe response frame to allow the connection.
+
+Why is this important? From this type of frame, it is possible to extract the MAC address of the device (usually randomized if not connected), the RSSI (unstable, but it provides an indication of the distance), the SSID (network for which the device is probing), the sequence counter and the time (when the probe is detected).
+
+The Research Statement is: is it possible to continuously estimate the number of people in a place of interest based on the Wi-Fi probe request frames?
+
+The Thesis Objectives are:
+\begin{itemize}
+  \item Capture and analysis of Wi-Fi probe request frames.
+  \item Data extraction, transmission and storage.
+  \item Analysis of Wi-Fi probe request frames patterns.
+  \item Provide an estimate of the number of customers.
+\end{itemize}
+
+Why Wi-Fi solution?
+High diffusion of Wi-Fi devices, high accuracy (using machine learning regression), low-cost implementation (use of a Raspberry Pi for data collection), real-time data transmission (using MQTT protocol), user privacy ensured (anonymization of MAC addresses).
+
+Sniffing the probe request frames using a Raspberry Pi running a Python program that uses the Scapy library. Then, sending batches to a server using MQTT and analyzing the collected data through a regression that has been optimized with Machine learning.
 
 
 \section{Outline} 

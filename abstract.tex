@@ -4,15 +4,16 @@
 \addcontentsline{toc}{chapter}{Abstract} % da aggiungere comunque all'indice
 \vspace{0.4 cm} 
 
-Sentence that describes the problem \dots
+Being able to estimate the number of people in your business, especially in this moment of crisis caused by the spread of COVID-19, represents a great opportunity for companies that have to deal with physical customers, both to offer their customers optimal service both to optimize your resources. The system developed, once adapted to the particular service offered by the company, allows you to optimally manage the demand for your service by providing an accurate estimate of customers at all times. From this information, the management of departments of the activity under analysis can understand when it is necessary to increase the amount of service provided and when it is possible to reduce saving important resources.
 
-	The abstract is a short summary of the work describing the target, the subject of the thesis, the methodology 
-and the techniques, the data collection and elaboration, the explanation of the reached results and the conclusion.
-The abstract of the dissertation must have a maximum length of 3 pages and must include the following information: 
+Employing your employees to manually count the people requesting the service at all times, think of the case of a bus or a supermarket, would be very frustrating for the employees but above all expensive. After an in-depth study of the current state of the art and of the different technologies developed for this purpose, it was decided that the optimal solution to obtain this information is to exploit the Wi-Fi signals coming from the devices of its customers to estimate their actual number.
 
-\begin{itemize}
-  \item context and motivation
-  \item short summary of the main problem you have dealt with
-  \item developed and /or used techniques
-  \item reached results, the personal contribution of the student has to be highlighted
-\end{itemize}
+This thesis project was carried out at U-Hopper during my external internship. The work I did was to improve an existing system and be able to make it more versatile and robust, providing real-time integration and allowing the system to be adapted to multiple use cases.
+
+I worked a lot on the data collection part, implementing a code on a Raspberry Pi that allowed to detect particular frames for the connection management from all Wi-Fi signals, i.e. the probe request frames from which it was possible to extract information useful for processing, ensuring the privacy of its customers.
+
+Much of the processing that is done on the data to get people estimates has been designed to run on a server. By developing a code for cleaning the collected data I was able to detect the number of devices present at all times in the vicinity of the Raspberry Pi. Subsequently, through a part of machine learning, properly calibrated with the ground truth that I collected manually, i.e. the real number of people, I was able to estimate the number of people present.
+
+In order to connect these two parts I used MQTT communication protocol, versatile and scalable, and I developed the whole part for data transmission with an MQTT client on the Raspberry Pi and another one on the server. Also on the server, in our case the U-Hopper one was used, an MQTT broker was executed to forward the data to the receiver client and a database for the storage of the data received by the Raspberry Pi on which it is then possible to carry out the analysis.
+
+The functioning of this system was initially tested at home, due to the restrictions imposed on people on their personal mobility, and subsequently validated in a place of social interest with a certain dynamism, a Cafe, once the restrictions ceased. The results obtained at the end of processing, adequately compared with manually-collected ground truth, are in line with initial expectations. In conclusion, the system provides a good estimate of the number of people present with a mean absolute error of less than two people. This was possible mainly thanks to a careful calibration of the machine learning model, which was initially developed by U-Hopper's colleagues for another project, which I perfected in order to conduct my analyzes and obtain the desired results.

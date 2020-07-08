@@ -8,9 +8,9 @@ Being able to estimate the number of people in your business, especially in this
 
 Employing your employees to manually count the people requesting the service at all times, think of the case of a bus or a supermarket, would be very frustrating for the employees but above all expensive. After an in-depth study of the current state of the art and of the different technologies developed for this purpose, it was decided that the optimal solution to obtain this information is to exploit the Wi-Fi signals coming from the devices of its customers to estimate their actual number.
 
-This thesis project was carried out at U-Hopper during my external internship. The work I did was to improve an existing system and be able to make it more versatile and robust, providing real-time integration and allowing the system to be adapted to multiple use cases.
+This thesis project was carried out at U-Hopper during my external internship. The work I did was to improve an existing system and be able to make it more versatile and robust, providing real-time data transmission and allowing the system to be adapted to multiple use cases.
 
-I worked a lot on the data collection part, implementing a code on a Raspberry Pi that allowed to detect particular frames for the connection management from all Wi-Fi signals, i.e. the probe request frames from which it was possible to extract information useful for processing, ensuring the privacy of its customers.
+I worked a lot on the data collection part, implementing a code on a Raspberry Pi that allowed to detect particular frames for the connection management from all Wi-Fi packets, i.e. the probe request frames from which it was possible to extract information useful for processing, ensuring the privacy of its customers by anonymizing the MAC address.
 
 Much of the processing that is done on the data to get people estimates has been designed to run on a server. By developing a code for cleaning the collected data I was able to detect the number of devices present at all times in the vicinity of the Raspberry Pi. Subsequently, through a part of machine learning, properly calibrated with the ground truth that I collected manually, i.e. the real number of people, I was able to estimate the number of people present.
 

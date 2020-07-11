@@ -23,7 +23,7 @@ The first block of the system is a data collector which is located in the place 
 
 The system uses the MQTT protocol for data forwarding, using an MQTT broker situated on a server, it must have a static IP address to be accessible, the broker has two dedicated queues: one for the collected data, published by the data collector and received by the subscribed receiver in the Back-End part, and the other one for the Back-End results published by the Back-End part after the analysis and received by the subscribed consumer.
 
-The Back-End part is situated on a server. Initially, it deals with collected data receiving and storing in a database. Then, it deals with data cleaning: RSSI thresholding, remove random encounters (and randomized MAC addresses are removed with this), make a blacklist to remove the ever-present devices or devices revealed too many times during the day and therefore get the number of devices present in the place of interest. Finally, it deals with data analysis using Machine Learning: fit the degree and the coefficients of the polynomial approximation using the trend and the seasonality of the number of devices detected to get the number of people present and publication of the results to the dedicated queue.
+The Back-End part is situated on a server. Initially, it deals with collected data receiving and storing in a database. Then, it deals with data cleaning: RSSI thresholding, remove random encounters (and randomized MAC addresses are removed with this), make a blacklist to remove the ever-present devices or devices revealed too many times during the day and therefore get the number of devices present in the place of interest. Finally, it deals with data analysis using machine learning: fit the degree and the coefficients of the polynomial approximation using the trend and the seasonality of the number of devices detected to get the number of people present and publication of the results to the dedicated queue.
 
 At the end of this processing, there is the consumer who receives the results of the Back-End, i.e. the number of people in the place of interest, and could use this information to improve his business.
 
@@ -234,35 +234,31 @@ I did not develop the part of machine learning, but I integrated an existing one
 The best degree and coefficients of the polynomial approximation are calculated during the preparation of the model that consist in a training phase for each time slot of each day of the week, using manually-collected ground truth. Figure~\ref{fig:flowtrainML} shows the flowchart of the logic used in that phase.
 
 In the timestamps where the ground truth is collected by the number of devices revealed in these timestamps, we get the trend and the seasonality of the annotated dataset.
-Using this dataset we train a regressor to find the best polynomial approximation for each considered time slot. We initially divide the dataset into train set and test set. The Machine Learning model performs a trend analysis to find the best polynomial approximation for each time slot. These values of the coefficients are stored to be used in the different time slots when data are collected to get the correct estimate of the number of people.
+Using this dataset we train a regressor to find the best polynomial approximation for each considered time slot. We initially divide the dataset into train set and test set. The machine learning model performs a trend analysis to find the best polynomial approximation for each time slot. These values of the coefficients are stored to be used in the different time slots when data are collected to get the correct estimate of the number of people.
+
+
+\vspace{0.1 cm}
+\subsection{Management of time processes}
+\label{sec:model}
+\vspace{0.1 cm} 
 
 There are 3 main time processes to manage:
 \begin{itemize}
   \item Probe revelations from the data collector: a random point process with different MAC addresses.
-  \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained.
-  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe revealed and devices revealed. Figure~\ref{fig:GTprocess} shows how the ground truth is collected.
+  \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained. For example, presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$. So by summing the presence of the different MAC addresses, the presence of devices is obtained: Presence of devices $= \sum_i$ presence MAC$_i$.
+  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe revealed and devices revealed. Figure~\ref{fig:GTprocess} shows how the ground truth is collected. Dirac delta function represent the sampling of the number of people presence: GT(t$_i$) $= g(t) \cdot \delta(t - t_{i})$
 \end{itemize}
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.9\textwidth]{images/presenceMAC} 
-\caption{Illustration of the collection of the ground truth.}
+\includegraphics[width=0.8\textwidth]{images/presenceMAC} 
+\caption{Illustration of how the presence of devices is calculated.}
 \label{fig:presenceMAC}
 \end{figure}
 
-Step function for the presence of the different MAC addresses:
-
-presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$
-
-presence of devices $= \sum_i$ presence MAC$_i$
-
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.9\textwidth]{images/GTprocess} 
+\includegraphics[width=0.65\textwidth]{images/GTprocess} 
 \caption{Illustration of the collection of the ground truth.}
 \label{fig:GTprocess}
 \end{figure}
-
-Dirac delta function for sampling the number of people presence:
-
-GT(t$_i$) $= g(t) \cdot \delta(t - t_{i})$

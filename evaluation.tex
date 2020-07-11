@@ -31,6 +31,8 @@ The final part of the Back-End for data analysis was executed on my computer to 
 
 % In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
 
+This validation phase lasted four weeks, for a total of 24 days of data collection and ground truth annotations for a total of 1022 manual annotation. 580673 probe request frames was captured for a total of 26567 MAC addresses revealed.
+
 
 \section{Evaluation of the results}
 \label{sec:evalres}
@@ -38,13 +40,13 @@ The final part of the Back-End for data analysis was executed on my computer to 
 
 Once the Machine Learning model is trained with the collected ground truth and the number of devices revealed at the timestamps when the ground truth is collected, the estimates of people are generated in these timestamps. We calculated the following parameters for evaluating the proposed system estimates and satisfy the KPIs (Key Performance Indicators), taking as the ground truth the number of people I manually annotated, with a random look strategy of some hours per day in different time slots:
 \begin{itemize}
-  \item Mean Absolute Error = mean(abs(people\_present - people\_estimated))
-  \item Mean Squared Error = mean(square(people\_present - people\_estimated))
-  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$
-  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$
+  \item Mean Absolute Error = mean(abs(people\_present - people\_estimated)) = 1.656
+  \item Mean Squared Error = mean(square(people\_present - people\_estimated)) = 5.310
+  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$ = 0.488
+  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$ = 0.849
 \end{itemize}
 
-In figure~\ref{fig:testresults1},~\ref{fig:testresults2} and~\ref{fig:testresults3} some results and useful processing information are reported.
+In figure~\ref{fig:testresults1},~\ref{fig:testresults2} and~\ref{fig:testresults3} some results and useful processing information are reported in details.
 
 \begin{figure}[h]
 \centering 
@@ -69,7 +71,7 @@ In figure~\ref{fig:testresults1},~\ref{fig:testresults2} and~\ref{fig:testresult
 
 % Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
 
-Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
+Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth. The probability of having an error bigger than 2 people is 0.21 and the error is distributed equally between excess and failing estimates. The figure~\ref{fig:scatterplotpres} reports that the predictions are higher when the actual number of people is low and the prediction are lower when the actual number of people is high. Seeing~\ref{fig:scatterplotest} is possible to see that there is not any type of systematic error.
 
 \begin{figure}[h]
 \centering 
@@ -154,7 +156,7 @@ Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:error
 
 % In figure~\ref{fig:devicespredictions}, ~\ref{fig:esteemseries} there are some graphs created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the Wi-Fi probe request frames are revealed.
 
-In figure~\ref{fig:devicespredictions} there is a graph created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the Wi-Fi probe request frames are revealed.
+In conclusion, in figure~\ref{fig:devicespredictions} there is a graph created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the batches are received by the Back-End.
 
 \begin{figure}[h]
 \centering 

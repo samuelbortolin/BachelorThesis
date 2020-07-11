@@ -10,23 +10,23 @@ Starting by describing the implementation of the data collector on a Raspberry P
 \label{sec:collector}
 \vspace{0.2 cm} 
 
-Data collector implemented on a Raspberry Pi model 2B using:
+The data collector is implemented on a Raspberry Pi model 2B using:
 \begin{itemize}
   \item A EDUP 802.11n Wi-Fi Dongle (Range $\sim$ 10 meters) is used with the Scapy library for Wi-Fi packets sniffing and information extraction.
   \item A Real Time Clock Module is used for timestamp detection.
   \item From hashlib Python module BLAKE2s, an implementation of the BLAKE2, is used for MAC address anonymization.
   \item JSON Python module is used to store data locally and to read and publish them later.
   \item Another EDUP 802.11n Wi-Fi Dongle (Range $\sim$ 10 meters) is used with the Netifaces library for managing the connection.
-  \item Paho-MQTT library is used for running the MQTT client and the data forwarding.
+  \item Paho-MQTT library is used for running the MQTT client and the data forwarding.\\publish(``topic'', payload=json.dumps(data), qos=2)
 \end{itemize}
 
-Client(client\_id=``name'', clean\_session=False), connect(``broker\_address'', port=1883)
+% Client(client\_id=``name'', clean\_session=False), connect(``broker\_address'', port=1883)
 
-username\_pw\_set(``username'', password=``password'')
+% username\_pw\_set(``username'', password=``password'')
 
-publish(``topic'', payload=json.dumps(data), qos=2)
+% publish(``topic'', payload=json.dumps(data), qos=2)
 
-subscribe(``topic'', qos=2)
+% subscribe(``topic'', qos=2)
 
 
 \section{Tool for ground truth management}
@@ -41,13 +41,14 @@ The other script is used to load the collected ground truth in the MongoDB using
 \label{sec:server}
 \vspace{0.2 cm} 
 
-Docker Containers running on the server:
+On the U-hopper server there are the other components running in Docker Containers:
 \begin{itemize}
   \item As MQTT broker we used Eclipse Mosquitto\footnote{ website: \url{https://hub.docker.com/_/eclipse-mosquitto} }, an open-source MQTT broker.
   \item As database we used MongoDB\footnote{ website: \url{https://hub.docker.com/_/mongo} } for its simplicity in handling JSON files.
-  \item For running the receiver MQTT client we used Paho-MQTT for receiving the data and for running a MongoClient we used PyMongo for storing data on MongoDB.
-  \item In the analyzer, we used PyMongo and Pandas to read and manage the data stored in MongoDB with a MongoClient to get the data and a Pandas DataFrame to clean the data and get the number of devices.
-  \item Sklearn library is used to analyze the cleaned data and the ground truth. This library implements the machine learning part.
+  \item For running the receiver MQTT client we used the Paho-MQTT library for receiving the data.\\subscribe(``topic'', qos=2)
+  \item For running the MongoClient we used the PyMongo library to access the MongoDB and store the data.
+  \item In the analyzer, we used PyMongo library and Pandas library to read and manage the data stored in MongoDB with a MongoClient to get the data and a Pandas DataFrame to clean the data and get the number of devices.
+  \item Sklearn library is used to analyze the cleaned data and train the regressor using the ground truth. This library is used to implement the machine learning part.
 \end{itemize}
 
 Finally, I developed a script to calculate the metrics, e.g. error information, and compute the graphs, e.g. histograms, error distribution and comparison of revealed devices and of people estimated with the real number of people present.

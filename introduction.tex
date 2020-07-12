@@ -27,7 +27,7 @@ The idea can also be extended to provide the same crowding data to its customers
 \label{sec:approach}
 \vspace{0.2 cm} 
 
-After analyzing the current state of the art and the different methods used in literature to count/estimate people in different fields of application and the different implementations, the approach chosen to solve this problem is to use the Wi-Fi probe request frames.
+After analyzing the current state of the art and the different methods used in literature for estimating crowd density in different fields of application and the different implementations, the approach chosen to solve this problem is to use the Wi-Fi probe request frames.
 In the 802.11 standards, there are the management frames to manage the connection between access points and devices. The most important for us is the probe request frame, a particular frame that a device sends to check if there is a known access point in the area that sends a probe response frame to allow the connection.
 
 Why is this important? From this type of frame, it is possible to extract the MAC address of the device (usually randomized if not connected), the RSSI (unstable, but it provides an indication of the distance), the SSID (network for which the device is probing), the sequence counter and the time (when the probe is detected).

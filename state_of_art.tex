@@ -2,15 +2,15 @@
 \label{cha:soa}
 \vspace{0.4 cm} 
 
-In this chapter, the current state of the art is analyzed in the context of counting people in a particular place of interest. The various technologies presented in the literature for this purpose are discussed. Furthermore, the reasons why counting people through the sniffing of the Wi-Fi probe request frames is the solution with the best trade-offs are explained. In addition, several implementations and some use cases are presented.
-At the end of this chapter, it will be clear the choice to develop this type of system with the U-Hopper team to find a solution to estimate the number of people. Unlike other solutions, our system achieves high accuracy, has a low-cost implementation, allows the transmission of data in real-time and ensures user privacy.
+In this chapter, the current state of the art is analyzed in the context of estimating crowd density in a particular place of interest. The various technologies presented in the literature for this purpose are discussed. Furthermore, the reasons why estimating crowd density through the sniffing of the Wi-Fi probe request frames is the solution with the best trade-offs are explained. In addition, several implementations and some use cases are presented.
+At the end of this chapter, it will be clear the choice to develop this type of system with the U-Hopper team to find a solution for estimating crowd density. Unlike other solutions, our system achieves high accuracy, has a low-cost implementation, allows the transmission of data in real-time and ensures user privacy.
 
 
-\section{People counting methods}
+\section{Crowd density estimation methods}
 \label{sec:count}
 \vspace{0.2 cm} 
 
-Let us start by thinking about before the popularity of mobile devices and the development of all these new communication technologies that are making this world increasingly interconnected. Therefore, before it becomes possible to exploit the signals of people's devices to identify and count them.
+Let us start by thinking about before the popularity of mobile devices and the development of all these new communication technologies that are making this world increasingly interconnected. Therefore, before it becomes possible to exploit the signals of the crowd's devices to identify and estimate the crowd density.
 
 In 2010, Pinna et al. compared some of the technologies of the time (e.g. infrared sensors, treadle switch-based systems, weigh in motion systems using load cells) to avoid the manual collection of the occupation information and promote automatic counting \cite{pinna2010automatic}. All of these methods presented in the paper have good accuracy (95\% in optimal conditions of use for treadle mats and approximately 90\% for the infrared sensors, 97\% for load cells) but have high costs and need the installation and the maintenance of the sensors.
 

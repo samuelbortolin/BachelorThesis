@@ -25,6 +25,7 @@
 % \usepackage{hyperref} % per i collegamenti ipertestuali, da togliere per la consegna della tesi
 \usepackage[output-decimal-marker={,}]{siunitx} % unita' di misura con convenzioni tipografiche italiane che prevedono la virgola e non il punto
 \usepackage{wrapfig}
+\usepackage{float}
 
 %%%%%%%%%%%%%%
 % supporto lettere accentate
@@ -148,8 +149,8 @@
       % \afterpage{\null\thispagestyle{empty}\clearpage}
       
       \input{evaluation}
-      \newpage
-      % \afterpage{\null\thispagestyle{empty}\clearpage}
+      % \newpage
+      \afterpage{\null\thispagestyle{empty}\clearpage}
       
       \input{conclusions}
       % \newpage

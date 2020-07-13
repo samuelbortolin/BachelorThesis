@@ -31,7 +31,7 @@ The final part of the Back-End for data analysis was executed on my computer to 
 
 % In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
 
-This validation phase lasted four weeks, for a total of 24 days of data collection and ground truth annotations for a total of 1022 manual annotation. 580673 probe request frames was captured for a total of 26567 MAC addresses revealed.
+This validation phase lasted four weeks, for a total of 24 days of data collection and ground truth annotations for a total of 1270 manual annotation. The final volume after the analysis is approximately 560 MB.
 
 
 \section{Evaluation of the results}
@@ -40,42 +40,59 @@ This validation phase lasted four weeks, for a total of 24 days of data collecti
 
 Once the Machine Learning model is trained with the collected ground truth and the number of devices revealed at the timestamps when the ground truth is collected, the estimates of people are generated in these timestamps. We calculated the following parameters for evaluating the proposed system estimates and satisfy the KPIs (Key Performance Indicators), taking as the ground truth the number of people I manually annotated, with a random look strategy of some hours per day in different time slots:
 \begin{itemize}
-  \item Mean Absolute Error = mean(abs(people\_present - people\_estimated)) = 1.656
-  \item Mean Squared Error = mean(square(people\_present - people\_estimated)) = 5.310
-  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$ = 0.488
-  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$ = 0.849
+  \item Mean Absolute Error = mean(abs(people\_present - people\_estimated)) = 1.731
+  \item Mean Squared Error = mean(square(people\_present - people\_estimated)) = 5.710
+  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$ = 0.510
+  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$ = 0.969
 \end{itemize}
 
-In figure~\ref{fig:testresults1},~\ref{fig:testresults2} and~\ref{fig:testresults3} some results and useful processing information are reported in details.
+In figure~\ref{fig:testresults1},~\ref{fig:testresults2},~\ref{fig:testresults3} and~\ref{fig:testresults4} some results and useful processing information are reported in details for every week.
 
-\begin{figure}[h]
+In the first week 119214 probe request frames are captured for a total of 7584 MAC addresses and 342 manual annotations.
+
+\begin{figure}[H]
 \centering 
 \includegraphics[width=1\textwidth]{images/testresults1} 
 \caption{Illustration of the results and useful processing information of the first week.}
 \label{fig:testresults1}
 \end{figure}
 
-\begin{figure}[h]
+In the second week 271377 probe request frames have been captured for a total of 10311 MAC addresses and 320 manual annotations.
+
+\begin{figure}[H]
 \centering 
 \includegraphics[width=1\textwidth]{images/testresults2} 
 \caption{Illustration of the results and useful processing information of the second week.}
 \label{fig:testresults2}
 \end{figure}
 
-\begin{figure}[h]
+In the third week 207983 probe request frames have been captured for a total of 10101 MAC addresses and 360 manual annotations.
+
+\begin{figure}[H]
 \centering 
 \includegraphics[width=1\textwidth]{images/testresults3} 
 \caption{Illustration of the results and useful processing information of the third week.}
 \label{fig:testresults3}
 \end{figure}
 
+In the fourth week 263405 probe request frames have been captured for a total of 10775 MAC addresses and 248 manual annotations.
+
+\begin{figure}[H]
+\centering 
+\includegraphics[width=1\textwidth]{images/testresults4} 
+\caption{Illustration of the results and useful processing information of the fourth week.}
+\label{fig:testresults4}
+\end{figure}
+
+In all the four week of data collection 861979 probe request frames have been captured for a total of 38771 MAC addresses and 1270 manual annotations.
+
 % Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
 
-Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth. The probability of having an error bigger than 2 people is 0.21 and the error is distributed equally between excess and failing estimates. The figure~\ref{fig:scatterplotpres} reports that the predictions are higher when the actual number of people is low and the prediction are lower when the actual number of people is high. Seeing~\ref{fig:scatterplotest} is possible to see that there is not any type of systematic error.
+Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth. The probability of having an error bigger than 2 people is 0.238 and the error is distributed equally between excess and failing estimates. The figure~\ref{fig:scatterplotpres} reports that the predictions are higher when the actual number of people is low and the prediction are lower when the actual number of people is high. Seeing~\ref{fig:scatterplotest} is possible to see that there is not any type of systematic error.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering 
-\includegraphics[width=0.8\textwidth]{images/comparison} 
+\includegraphics[width=1\textwidth]{images/comparison} 
 \caption{Comparison between estimates, revealed devices and ground truth.}
 \label{fig:comparison}
 \end{figure}
@@ -101,18 +118,18 @@ Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:error
 % \label{fig:errorpres}
 % \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{minipage}[b]{8.5cm}
 \centering
 \includegraphics[width=1\textwidth]{images/absoluteerror}
-\caption{Graph illustrating the distribution of the absolute error.}
+\caption{Graph illustrating the distribution\\of the absolute error.}
 \label{fig:absoluteerror}
 \end{minipage}
-\ \hspace{2mm} \hspace{3mm} \
+\ \hspace{2mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
 \includegraphics[width=1\textwidth]{images/errorpres}
-\caption{Graph illustrating the distribution of the error.}
+\caption{Graph illustrating the distribution\\of the error.}
 \label{fig:errorpres}
 \end{minipage}
 \end{figure}
@@ -138,19 +155,37 @@ Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:error
 % \label{fig:scatterplotest}
 % \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{minipage}[b]{8.5cm}
 \centering
 \includegraphics[width=1\textwidth]{images/scatterplotpres}
-\caption{Scatter plot illustrating how the error is distributed in relation to the present number of people.}
+\caption{Scatter plot illustrating how the\\error is distributed in relation to the present\\number of people.}
 \label{fig:scatterplotpres}
 \end{minipage}
-\ \hspace{2mm} \hspace{3mm} \
+\ \hspace{2mm} \
 \begin{minipage}[b]{8.5cm}
 \centering
 \includegraphics[width=1\textwidth]{images/scatterplotest}
-\caption{Scatter plot illustrating how the error is distributed in relation to the estimated number of people.}
+\caption{Scatter plot illustrating how the\\error is distributed in relation to the estimated\\number of people.}
 \label{fig:scatterplotest}
+\end{minipage}
+\end{figure}
+
+Figure~\ref{fig:Saturday_SM} and figure~\ref{fig:Sunday_SM} show the results in two specific time slots of two days to show how the estimation of people is similar to the real number of people present.
+
+\begin{figure}[H]
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=1\textwidth]{images/Saturday_SM}
+\caption{Graph illustrating how the\\system works on Saturday in the second morning.}
+\label{fig:Saturday_SM}
+\end{minipage}
+\ \hspace{2mm} \
+\begin{minipage}[b]{8.5cm}
+\centering
+\includegraphics[width=1\textwidth]{images/Sunday_SM}
+\caption{Graph illustrating how the\\system works on Sunday in the second morning.}
+\label{fig:Sunday_SM}
 \end{minipage}
 \end{figure}
 
@@ -160,7 +195,7 @@ In conclusion, in figure~\ref{fig:devicespredictions} there is a graph created t
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.8\textwidth]{images/devicespredictions} 
+\includegraphics[width=1\textwidth]{images/devicespredictions} 
 \caption{Comparison between estimates and revealed devices.}
 \label{fig:devicespredictions}
 \end{figure}

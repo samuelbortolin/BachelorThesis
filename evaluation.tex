@@ -3,14 +3,14 @@
 \vspace{0.4 cm} 
 
 In this chapter, the proposed system is validated and the results are evaluated.
-Starting by describing how the system is tested at home to assess the feasibility of the proposed method. Subsequently, where and how the system is tested for experimental validation. Finally, an evaluation of the achieved results is presented. The data collector implemented on a Raspberry Pi has been placed in a place of social interest. In this place of social interest, I manually collected the ground truth for training and evaluating the model. The Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper server. The final Back-End part for analyzing the data has been executed on my computer to adapt the parameters and train the Machine Learning model. After this chapter, it will be clear how the system has been validated and what the results achieved by the proposed system are. Overall conclusions are discussed in the next chapter.
+Starting by describing how the system is tested at home to assess the feasibility of the proposed method. Subsequently, where and how the system is tested for experimental validation. Finally, an evaluation of the achieved results is presented. The data collector implemented on a Raspberry Pi has been placed in a place of social interest. In this place of social interest, I manually collected the ground truth for training and evaluating the model. The Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper cloud infrastructure. The final Back-End part for analyzing the data has been executed on my computer to adapt the parameters and train the Machine Learning model. After this chapter, it will be clear how the system has been validated and what the results achieved by the proposed system are. Overall conclusions are discussed in the next chapter.
 
 
 \section{Experimental validation}
 \label{sec:expval}
 \vspace{0.2 cm} 
 
-Due to the complex situation of this period due to COVID-19 and the limitations imposed on people, it was necessary to test the functioning of the system at home and verify the feasibility of the first part of the proposed method, i.e. detect the devices in the area. The tests were conducted on different days with the aim of revealing how many devices are in a determinate room of the house. As can be seen from figure~\ref{fig:sniffertest}, $\sim$ 66.000 Wi-Fi probe request frames are collected and the values of RSSI of the detected devices are divided into two main ranges. A value of RSSI in range -35 $\div$ -69 indicates that the device is close to the data collector, i.e. in the kitchen. Instead, a value of RSSI in range -69 $\div$ -91 indicates that the device is away from the data collector, i.e. not in the kitchen. Random encounters that do not belong to the house are rare and there are randomized MACs related to devices that are not connected to the home Wi-Fi network.
+Due to the complex situation of this period due to COVID-19 and the limitations imposed on people, it was necessary to test the functioning of the system at home and verify the feasibility of the first part of the proposed method, i.e. detect the devices in the area. The tests were conducted on different days with the aim of detecting how many devices are in a determinate room of the house. As can be seen from figure~\ref{fig:sniffertest}, 65928 Wi-Fi probe request frames are collected and the values of RSSI of the 12 home device detected are divided into two main ranges. A value of RSSI in range -35 $\div$ -69 dBm indicates that the device is close to the data collector, i.e. in the kitchen. Instead, a value of RSSI in range -69 $\div$ -91 dBm indicates that the device is away from the data collector, i.e. not in the kitchen. Random encounters that do not belong to the house are rare and there are randomized MACs related to devices that are not connected to the home Wi-Fi network.
 
 \begin{figure}[h]
 \centering 
@@ -23,11 +23,11 @@ Subsequently, with the reduction of restrictions on personal mobility, it was po
 
 The data collector implemented on a Raspberry Pi model 2B has been placed in this Cafe and connected to an electrical source. In this place of social interest, I manually collected the ground truth with a random look strategy on my computer for training and evaluating the model.
 
-The Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper server.
+The Mosquitto MQTT Broker, the MongoDB database and the Back-End part for receiving and storing the data in the database have been executed on the U-Hopper cloud infrastructure.
 
-Experimental environment considerations: Wi-Fi dongle (with a range of $\sim$ 10 meters) can cover all the Cafe area and detect all the devices of the people. The Cafe does not have a Wi-Fi network but, when I go there to collect the ground truth, it uses the hotspot from my phone to send data to the server.
+Experimental environment considerations: Wi-Fi dongle (with a range of $\sim$ 10 meters) can cover all the Cafe area and detect all the devices of the people. The Cafe does not have a Wi-Fi network but, when I go there to collect the ground truth, it uses the hotspot from my phone to send data to the cloud infrastructure.
 
-The final part of the Back-End for data analysis was executed on my computer to adapt the parameters of the cleaning part for the case study. After cleaning the data and obtaining the presence of devices, it is possible to prepare and train the Machine Learning model with the collected ground truth and the number of devices revealed in the timestamps when the ground truth was collected.
+The final part of the Back-End for data analysis was executed on my computer to adapt the parameters of the cleaning part for the case study. After cleaning the data and obtaining the presence of devices, it is possible to prepare and train the Machine Learning model with the collected ground truth and the number of devices detected in the timestamps when the ground truth was collected.
 
 % In the end, we store the results in the database instead of sending them to a hypothetical consumer of this type of system.
 
@@ -38,17 +38,17 @@ This validation phase lasted four weeks, for a total of 24 days of data collecti
 \label{sec:evalres}
 \vspace{0.2 cm} 
 
-Once the Machine Learning model is trained with the collected ground truth and the number of devices revealed at the timestamps when the ground truth is collected, the estimates of people are generated in these timestamps. We calculated the following parameters for evaluating the proposed system estimates and satisfy the KPIs (Key Performance Indicators), taking as the ground truth the number of people I manually annotated, with a random look strategy of some hours per day in different time slots:
+Once the Machine Learning model is trained with the collected ground truth and the number of devices detected at the timestamps when the ground truth is collected, the estimates of people are generated in these timestamps. We calculated the following parameters for evaluating the proposed system estimates and satisfy the KPIs (Key Performance Indicators), taking as the ground truth the number of people I manually annotated, with a random look strategy of some hours per day in different time slots:
 \begin{itemize}
   \item Mean Absolute Error = mean(abs(people\_present - people\_estimated)) = 1.731
   \item Mean Squared Error = mean(square(people\_present - people\_estimated)) = 5.710
-  \item For each revelation scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/revelation = $\frac{scaled\_MSE\_trend}{revelation}$ = 0.510
-  \item For each revelation scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/revelation = $\frac{scaled\_MAE\_trend}{revelation}$ = 0.969
+  \item For each detection scaled\_MSE\_trend += $\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)^{2}$ and in the end\\Scaled\_MSE\_trend/detections = $\frac{scaled\_MSE\_trend}{detections}$ = 0.510
+  \item For each detection scaled\_MAE\_trend += abs$\Bigl(\frac{people\_present - people\_estimated}{people\_present} \Bigr)$ and in the end\\Scaled\_MAE\_trend/detections = $\frac{scaled\_MAE\_trend}{detections}$ = 0.969
 \end{itemize}
 
 In figure~\ref{fig:testresults1},~\ref{fig:testresults2},~\ref{fig:testresults3} and~\ref{fig:testresults4} some results and useful processing information are reported in details for every week.
 
-In the first week 119214 probe request frames are captured for a total of 7584 MAC addresses and 342 manual annotations.
+In the first week 119214 probe request frames are captured for a total of 7584 unique MAC addresses detected and 342 manual annotations.
 
 \begin{figure}[H]
 \centering 
@@ -57,7 +57,7 @@ In the first week 119214 probe request frames are captured for a total of 7584 M
 \label{fig:testresults1}
 \end{figure}
 
-In the second week 271377 probe request frames have been captured for a total of 10311 MAC addresses and 320 manual annotations.
+In the second week 271377 probe request frames have been captured for a total of 10311 unique MAC addresses detected and 320 manual annotations.
 
 \begin{figure}[H]
 \centering 
@@ -66,7 +66,7 @@ In the second week 271377 probe request frames have been captured for a total of
 \label{fig:testresults2}
 \end{figure}
 
-In the third week 207983 probe request frames have been captured for a total of 10101 MAC addresses and 360 manual annotations.
+In the third week 207983 probe request frames have been captured for a total of 10101 unique MAC addresses detected and 360 manual annotations.
 
 \begin{figure}[H]
 \centering 
@@ -75,7 +75,7 @@ In the third week 207983 probe request frames have been captured for a total of 
 \label{fig:testresults3}
 \end{figure}
 
-In the fourth week 263405 probe request frames have been captured for a total of 10775 MAC addresses and 248 manual annotations.
+In the fourth week 263405 probe request frames have been captured for a total of 10775 unique MAC addresses detected and 248 manual annotations.
 
 \begin{figure}[H]
 \centering 
@@ -84,23 +84,23 @@ In the fourth week 263405 probe request frames have been captured for a total of
 \label{fig:testresults4}
 \end{figure}
 
-In all the four week of data collection 861979 probe request frames have been captured for a total of 38771 MAC addresses and 1270 manual annotations.
+In all the four week of data collection 861979 probe request frames have been captured for a total of 38771 unique MAC addresses detected and 1270 manual annotations.
 
-% Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth.
+% Finally, in figure~\ref{fig:comparison},~\ref{fig:differentseries},~\ref{fig:absoluteerror},~\ref{fig:errorpres},~\ref{fig:scatterplotpres},~\ref{fig:errorest},~\ref{fig:scatterplotest} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between detected devices and the ground truth.
 
-Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between revealed devices and the ground truth. The probability of having an error bigger than 2 people is 0.238 and the error is distributed equally between excess and failing estimates. The figure~\ref{fig:scatterplotpres} reports that the predictions are higher when the actual number of people is low and the prediction are lower when the actual number of people is high. Seeing~\ref{fig:scatterplotest} is possible to see that there is not any type of systematic error.
+Finally, in figure~\ref{fig:comparison},~\ref{fig:absoluteerror},~\ref{fig:errorpres} there are some graphs created to show the Machine Learning results in terms of errors and comparison of the estimates between detected devices and the ground truth. The probability of having an error bigger than 2 people is 0.238 and the error is distributed equally between excess and failing estimates. The figure~\ref{fig:scatterplotpres} reports that the predictions are higher when the actual number of people is low and the prediction are lower when the actual number of people is high. Seeing~\ref{fig:scatterplotest} is possible to see that there is not any type of systematic error.
 
 \begin{figure}[H]
 \centering 
 \includegraphics[width=1\textwidth]{images/comparison} 
-\caption{Comparison between estimates, revealed devices and ground truth.}
+\caption{Comparison between estimates, detected devices and ground truth.}
 \label{fig:comparison}
 \end{figure}
 
 % \begin{figure}[h]
 % \centering 
 % \includegraphics[width=0.8\textwidth]{images/differentseries} 
-% \caption{Comparison between estimates, revealed devices and ground truth.}
+% \caption{Comparison between estimates, detected devices and ground truth.}
 % \label{fig:differentseries}
 % \end{figure}
 
@@ -189,20 +189,20 @@ Figure~\ref{fig:Saturday_SM} and figure~\ref{fig:Sunday_SM} show the results in 
 \end{minipage}
 \end{figure}
 
-% In figure~\ref{fig:devicespredictions}, ~\ref{fig:esteemseries} there are some graphs created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the Wi-Fi probe request frames are revealed.
+% In figure~\ref{fig:devicespredictions}, ~\ref{fig:esteemseries} there are some graphs created to show the Machine Learning results in terms of comparison of the estimates between detected devices on all the time series when the Wi-Fi probe request frames are detected.
 
-In conclusion, in figure~\ref{fig:devicespredictions} there is a graph created to show the Machine Learning results in terms of comparison of the estimates between revealed devices on all the time series when the batches are received by the Back-End.
+In conclusion, in figure~\ref{fig:devicespredictions} there is a graph created to show the Machine Learning results in terms of comparison of the estimates between detected devices on all the time series when the batches are received by the Back-End.
 
 \begin{figure}[h]
 \centering 
 \includegraphics[width=1\textwidth]{images/devicespredictions} 
-\caption{Comparison between estimates and revealed devices.}
+\caption{Comparison between estimates and detected devices.}
 \label{fig:devicespredictions}
 \end{figure}
 
 % \begin{figure}[h]
 % \centering 
 % \includegraphics[width=0.8\textwidth]{images/esteemseries} 
-% \caption{Comparison between estimates and revealed devices.}
+% \caption{Comparison between estimates and detected devices.}
 % \label{fig:esteemseries}
 % \end{figure}

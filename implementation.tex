@@ -33,15 +33,15 @@ The data collector is implemented on a Raspberry Pi model 2B using:
 \label{sec:toolgt}
 \vspace{0.2 cm} 
 
-I developed two scripts to manage the ground truth. One for collecting the ground truth and made the revelations in the place of interest. When the number of people present is written on the input of the program, it saves this information with the timestamp, the day of the week on a file.
+I developed two scripts to manage the ground truth. One for collecting the ground truth and made the annotations in the place of interest. When the number of people present is written on the input of the program, it saves this information with the timestamp, the day of the week on a file.
 The other script is used to load the collected ground truth in the MongoDB using PyMongo MongoClient for accessing the database and storing data.
 
 
-\section{Server implementation}
-\label{sec:server}
+\section{cloud infrastructure implementation}
+\label{sec:cloudinfrastructure}
 \vspace{0.2 cm} 
 
-On the U-hopper server there are the other components running in Docker Containers:
+On the U-hopper cloud infrastructure there are the other components running in Docker Containers:
 \begin{itemize}
   \item As MQTT broker we used Eclipse Mosquitto\footnote{ website: \url{https://hub.docker.com/_/eclipse-mosquitto} }, an open-source MQTT broker.
   \item As database we used MongoDB\footnote{ website: \url{https://hub.docker.com/_/mongo} } for its simplicity in handling JSON files.
@@ -51,4 +51,4 @@ On the U-hopper server there are the other components running in Docker Containe
   \item Sklearn library is used to analyze the cleaned data and train the regressor using the ground truth. This library is used to implement the machine learning part.
 \end{itemize}
 
-Finally, I developed a script to calculate the metrics, e.g. error information, and compute the graphs, e.g. histograms, error distribution and comparison of revealed devices and of people estimated with the real number of people present.
+Finally, I developed a script to calculate the metrics, e.g. error information, and compute the graphs, e.g. histograms, error distribution and comparison of detected devices and of people estimated with the real number of people present.

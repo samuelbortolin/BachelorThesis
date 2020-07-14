@@ -12,7 +12,7 @@ U-Hopper brings together research and development skills and proven experience i
 \label{sec:problem}
 \vspace{0.2 cm} 
 
-In managing a company that provides services to physical customers, the most important aspect is how to manage the flow of customers to guarantee them optimal service. Overcrowding and long waiting times are serious problems caused by poor demand management. These problems spoil the service experience of the users and especially during this pandemic period due to COVID-19, it is important to avoid generating crowds and queues to avoid new contagions. The repetition of these events leads to the loss of customers and therefore to the loss of revenue for the company. This fact is increasingly relevant in this period of crisis with very low liquidity.
+In managing a company that provides services to physical customers, the most important aspect is how to manage the flow of customers to guarantee them optimal service. Overcrowding and long waiting times are serious problems caused by poor demand management. These problems spoil the service experience of the users and especially during this pandemic period due to COVID-19, it is important to detecting and monitoring crowds and queues to avoid new contagions. The repetition of these events leads to the loss of customers and therefore to the loss of revenue for the company. This fact is increasingly relevant in this period of crisis with very low liquidity.
 
 Offering an efficient and fast service is the key to increasing the number of customers in their own business. The solution is not to use all the available resources to try to meet these requirements, as excessive use of these leads to an increase in costs without leading to an increase in revenues.
 Of course, in order to calibrate the correct amount of service to offer, it would be necessary to know the demand. In particular it is necessary to know every time how many people require the service. Having this information is not trivial as it is highly variable over time and depends on several factors.
@@ -43,12 +43,12 @@ The Thesis Objectives are:
 \end{itemize}
 
 Why Wi-Fi solution?
-High diffusion of Wi-Fi devices, low-cost implementation (use of a Raspberry Pi for data collection), real-time data transmission (using MQTT protocol), costumer privacy ensured (anonymization of MAC addresses).
+High diffusion of Wi-Fi devices, low-cost implementation (use of a Raspberry Pi for data collection), real-time data transmission (using MQTT protocol), costumer privacy ensured (GDPR compliance anonymization of MAC addresses).
 
 What was made?
 I designed and developed a system for this problem that could work in several contexts.
-Sniffing the probe request frames using a Raspberry Pi running a Python program that uses the Scapy library. Then, sending batches to a server using MQTT and analyzing the collected data through a regression that has been optimized with machine learning.
-The system was tested in a Cafe and I collected 4 weeks of data and manually-annotated ground truth to validate and evaluate the functioning.
+Sniffing the probe request frames using a Raspberry Pi running a Python program that uses the Scapy library. Then, sending batches to a cloud infrastructure using MQTT and analyzing the collected data through a regression that has been optimized with machine learning.
+The system was tested in a Cafe and I collected 4 weeks of data and manually-annotated ground truth (i.e. the actual number of people) to validate and evaluate the functioning.
 
 
 \section{Outline} 

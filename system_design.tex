@@ -21,9 +21,9 @@ This is a distributed architecture, in fact, there are three main components on 
 
 The first block of the system is a data collector which is located in the place of interest. It performs a preprocessing of the data (distributed work) with its functionalities: sniffing of Wi-Fi packets, capture the probe request frames; extract the useful information from these; detect the current timestamp; anonymize the MAC address using a hash function (no more privacy issues); check the internet connection; if there is no connection, save the data in the local storage; if there is a connection, publish the collected data to the dedicated queue.
 
-The system uses the MQTT protocol for data forwarding, using an MQTT broker situated on a server, it must have a static IP address to be accessible, the broker has two dedicated queues: one for the collected data, published by the data collector and received by the subscribed receiver in the Back-End part, and the other one for the Back-End results published by the Back-End part after the analysis and received by the subscribed consumer.
+The system uses the MQTT protocol for data forwarding, using an MQTT broker situated on a cloud infrastructure, it must have a static IP address to be accessible, the broker has two dedicated queues: one for the collected data, published by the data collector and received by the subscribed receiver in the Back-End part, and the other one for the Back-End results published by the Back-End part after the analysis and received by the subscribed consumer.
 
-The Back-End part is situated on a server. Initially, it deals with collected data receiving and storing in a database. Then, it deals with data cleaning: RSSI thresholding, remove random encounters (and randomized MAC addresses are removed with this), make a blacklist to remove the ever-present devices or devices revealed too many times during the day and therefore get the number of devices present in the place of interest. Finally, it deals with data analysis using machine learning: fit the degree and the coefficients of the polynomial approximation using the trend and the seasonality of the number of devices detected to get the number of people present and publication of the results to the dedicated queue.
+The Back-End part is situated on a cloud infrastructure. Initially, it deals with collected data receiving and storing in a database. Then, it deals with data cleaning: RSSI thresholding, remove random encounters (and randomized MAC addresses are removed with this), make a blacklist to remove the ever-present devices or devices detected too many times during the day and therefore get the number of devices present in the place of interest. Finally, it deals with data analysis using machine learning: fit the degree and the coefficients of the polynomial approximation using the trend and the seasonality of the number of devices detected to get the number of people present and publication of the results to the dedicated queue.
 
 At the end of this processing, there is the consumer who receives the results of the Back-End, i.e. the number of people in the place of interest, and could use this information to improve his business.
 
@@ -44,7 +44,7 @@ This architecture is scalable, it could admit many sensors physically distribute
 The main block I worked on is the data collector. I developed the logic behind this block, with particular attention in the research of the connection and in the management of the data collected.
 
 The flowchart representing the data collector logic is shown in figure~\ref{fig:flowcollect}. When the data collector is turned on, the system searches for the connected Wi-Fi dongle and puts it in monitor mode to perform the packet sniffing. Initially, a packet counter is set = 0 and the actual timestamp is saved. When a packet is received, it checks if it is a probe request frame and if it is not, it is thrown away.
-When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet was revealed together with the other information are saved and the packet counter increases by one.
+When a probe request frame is captured, the following information are extracted: RSSI, SSID (Service Set Identifier), MAC address, sequence counter. The timestamp when the packet has been detected together with the other information are saved and the packet counter increases by one.
 
 \begin{figure}[h!]
 \centering 
@@ -134,7 +134,7 @@ Each subscription/publication to the broker can specify a quality of service mea
   \item 2: Exactly once - the sender (publisher or broker) and receiver (broker or the subscribers) engage in a two-level handshake to ensure only one copy of the message is received (assured delivery).
 \end{itemize}
 
-For these illustrated features, the MQTT protocol is used in the system for data forwarding. A broker situated on a server, with a static IP address to be accessible and with two dedicated queues is used, one for the collected data, published by the data collector and received by the subscribed Back-End part, and the other one for the Back-End results published by the Back-End and received by the subscribed consumer.
+For these illustrated features, the MQTT protocol is used in the system for data forwarding. A broker situated on a cloud infrastructure, with a static IP address to be accessible and with two dedicated queues is used, one for the collected data, published by the data collector and received by the subscribed Back-End part, and the other one for the Back-End results published by the Back-End and received by the subscribed consumer.
 The broker is set up to allow only connections from the data collector, the Back-End and the consumer. They have their own credentials for authentication.
 
 The clean\_session is set = False. If this connection is interrupted by any circumstances, the MQTT broker can buffer all messages and send them to the client when it is back online.
@@ -145,7 +145,7 @@ The QoS is set = 2 both in publish and subscribe. To ensure exactly one copy of 
 \label{sec:analysis}
 \vspace{0.2 cm} 
 
-The Back-End part is situated on a server and receives and stores the collected data. The two main Back-End functionalities are data cleaning and data analysis.
+The Back-End part is situated on a cloud infrastructure and receives and stores the collected data. The two main Back-End functionalities are data cleaning and data analysis.
 
 The flowchart representing the data Back-End logic is shown in figure~\ref{fig:flowcleaner}. Initially, the Back-End subscribes to the collected data queue to receive the data when published by the data collector. Input data is managed by adding corollary information for future analysis, e.g. randomization and day of the week. Then this data is stored in a database.
 
@@ -165,7 +165,7 @@ When a time slot is over, the data of the current time slot is read from the dat
 % \label{fig:flowrandom}
 % \end{figure}
 
-Then a blacklist is made to remove the ever-present devices or devices revealed too many times during the day, as shown in the flowchart in figure~\ref{fig:flowblacklist}. A list of occurrences is created with a maximum interrupt time of delta\_t. If there are devices that appears many times or for a long time, they are blacklisted. These parameters have to be adapted to the case study: MAX\_T=7200 MAX\_OCC=10 DELTA\_T=300.
+Then a blacklist is made to remove the ever-present devices or devices detected too many times during the day, as shown in the flowchart in figure~\ref{fig:flowblacklist}. A list of occurrences is created with a maximum interrupt time of delta\_t. If there are devices that appears many times or for a long time, they are blacklisted. These parameters have to be adapted to the case study: MAX\_T=7200 MAX\_OCC=10 DELTA\_T=300.
 At this point, it is possible to get the number of devices present in the place of interest for each timestamp based on the occurrences of the devices not in the blacklist. The presence of a device is increased by a probe compensation time set as t$_{p}$=15 seconds added before the first Wi-Fi probe request detection of the MAC address and after the last one. This is done to consider the time that passes between the actual presence of the device and the actual transmission of the first Wi-Fi probe request.
 
 % \begin{figure}[h]
@@ -233,7 +233,7 @@ I did not develop the part of machine learning, but I integrated an existing one
 
 The best degree and coefficients of the polynomial approximation are calculated during the preparation of the model that consist in a training phase for each time slot of each day of the week, using manually-collected ground truth. Figure~\ref{fig:flowtrainML} shows the flowchart of the logic used in that phase.
 
-In the timestamps where the ground truth is collected by the number of devices revealed in these timestamps, we get the trend and the seasonality of the annotated dataset.
+In the timestamps where the ground truth is collected by the number of devices detected in these timestamps, we get the trend and the seasonality of the annotated dataset.
 Using this dataset we train a regressor to find the best polynomial approximation for each considered time slot. We initially divide the dataset into train set and test set. The machine learning model performs a trend analysis to find the best polynomial approximation for each time slot. These values of the coefficients are stored to be used in the different time slots when data are collected to get the correct estimate of the number of people.
 
 
@@ -244,9 +244,9 @@ Using this dataset we train a regressor to find the best polynomial approximatio
 
 There are 3 main time processes to manage:
 \begin{itemize}
-  \item Probe revelations from the data collector: a random point process with different MAC addresses.
-  \item Presence of devices: a cadlag step function based on the revelations of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained. For example, presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$. So by summing the presence of the different MAC addresses, the presence of devices is obtained: Presence of devices $= \sum_i$ presence MAC$_i$.
-  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe revealed and devices revealed. Figure~\ref{fig:GTprocess} shows how the ground truth is collected. Dirac delta function represent the sampling of the number of people presence: GT(t$_i$) $= g(t) \cdot \delta(t - t_{i})$
+  \item Probe request frame detections from the data collector: a random point process with different MAC addresses.
+  \item Presence of devices: a cadlag step function based on the detections of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained. For example, presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$. So by summing the presence of the different MAC addresses, the presence of devices is obtained: Presence of devices $= \sum_i$ presence MAC$_i$.
+  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe request frames detected and devices detected. Figure~\ref{fig:GTprocess} shows how the ground truth is collected. Dirac delta function represent the sampling of the number of people presence: GT(t$_i$) $= g(t) \cdot \delta(t - t_{i})$
 \end{itemize}
 
 \begin{figure}[h]
@@ -258,7 +258,7 @@ There are 3 main time processes to manage:
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.65\textwidth]{images/GTprocess} 
+\includegraphics[width=0.61\textwidth]{images/GTprocess} 
 \caption{Illustration of the collection of the ground truth.}
 \label{fig:GTprocess}
 \end{figure}

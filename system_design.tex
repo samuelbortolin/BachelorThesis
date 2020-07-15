@@ -245,8 +245,8 @@ Using this dataset we train a regressor to find the best polynomial approximatio
 There are 3 main time processes to manage:
 \begin{itemize}
   \item Probe request frame detections from the data collector: a random point process with different MAC addresses.
-  \item Presence of devices: a cadlag step function based on the detections of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained. For example, presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$. So by summing the presence of the different MAC addresses, the presence of devices is obtained: Presence of devices $= \sum_i$ presence MAC$_i$.
-  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe request frames detected and devices detected. Figure~\ref{fig:GTprocess} shows how the ground truth is collected. Dirac delta function represent the sampling of the number of people presence: GT(t$_i$) $= g(t) \cdot \delta(t - t_{i})$
+  \item Presence of devices: a cadlag step function based on the detections of the MAC addresses, obtained after the cleaning of the collected data. Figure~\ref{fig:presenceMAC} show how the presence of the devices is obtained. For example, presence MAC$_1$ $= 1 \cdot \chi_{[ t_{0} - t_{p}, t_{3} + t_{p} )} + 1 \cdot \chi_{[ t_{6} - t_{p}, t_{9} + t_{p} )}$ where t$_p$ is a time to compensate for the gap between the actual presence of the device and the detection of a probe request frame. So by summing the presence of the different MAC addresses, the presence of devices is obtained: Presence of devices $= \sum_i$ presence MAC$_i$.
+  \item Collection of the ground truth: a sampling of the number people present, a random point process asynchronous with respect to the probe request frames detected and devices detected. Figure~\ref{fig:GTprocess} shows how the ground truth is collected. Dirac delta function represent the sampling of the number of people presence: Ground truth(t$_i$) $= g(t) \cdot \delta(t - t_{i})$
 \end{itemize}
 
 \begin{figure}[h]
@@ -258,7 +258,7 @@ There are 3 main time processes to manage:
 
 \begin{figure}[h]
 \centering 
-\includegraphics[width=0.61\textwidth]{images/GTprocess} 
+\includegraphics[width=0.57\textwidth]{images/GTprocess} 
 \caption{Illustration of the collection of the ground truth.}
 \label{fig:GTprocess}
 \end{figure}
